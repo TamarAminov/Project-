@@ -1,0 +1,82 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Service.Dto.VendorAttributeDto;
+using Service.Dto.UserDto;
+using Service.Interfaces;
+using Service.Services;
+
+namespace WebApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class VendorAttributeController : ControllerBase
+    {
+        private readonly IService<VendorAttributeDtoo> _attributeService;
+
+        public VendorAttributeController(IService<VendorAttributeDtoo> attributeService)
+        {
+            _attributeService = attributeService;
+        }
+
+        // 1. שליפת כל המאפיינים (סינון לפי משתמש/מנהל בתוך ה-Service)
+        [HttpGet]
+        public async Task<ActionResult<List<VendorAttributeDtoo>>> Get([FromQuery] UserDtoo user)
+        {
+            var attributes = await _attributeService.GetAll(user);
+            return Ok(attributes);
+        }
+
+        // 2. שליפת מאפיין ספציפי לפי ID
+        [HttpGet("{id}")]
+        public async Task<ActionResult<VendorAttributeDtoo>> GetById(int id)
+        {
+            var attribute = await _attributeService.GetById(id);
+            if (attribute == null)
+            {
+                return NotFound($"Vendor Attribute with ID {id} not found.");
+            }
+            return Ok(attribute);
+        }
+
+        // 3. הוספת מאפיין חדש לספק
+        [HttpPost]
+        public async Task<ActionResult<VendorAttributeDtoo>> Post([FromBody] VendorAttributeDtoo attributeDto)
+        {
+            if (attributeDto == null)
+            {
+                return BadRequest("Invalid attribute data.");
+            }
+
+            var newAttribute = await _attributeService.AddItem(attributeDto);
+
+            // מחזיר 201 עם נתיב לשליפה
+            return CreatedAtAction(nameof(GetById), new { id = newAttribute.VendorAttributeID }, newAttribute);
+        }
+
+        // 4. עדכון מאפיין קיים
+        [HttpPut("{id}")]
+        public async Task<ActionResult<VendorAttributeDtoo>> Put(int id, [FromBody] VendorAttributeDtoo attributeDto)
+        {
+            if (attributeDto == null) return BadRequest();
+
+            var result = await _attributeService.UpdateItem(id, attributeDto);
+
+            if (result == null)
+            {
+                return NotFound($"Vendor Attribute with ID {id} not found for update.");
+            }
+
+            return Ok(result); // מחזיר את האובייקט המעודכן כפי שביקשת
+        }
+
+        // 5. מחיקת מאפיין
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var existing = await _attributeService.GetById(id);
+            if (existing == null) return NotFound();
+
+            await _attributeService.DeleteItem(id);
+            return NoContent(); // 204 Success
+        }
+    }
+}

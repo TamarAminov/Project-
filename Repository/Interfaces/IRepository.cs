@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Repository.Interfaces
+{
+    public interface IRepository<T>
+    {
+        Task<List<T>> GetAll();
+        Task<List<T>> GetAll(int id);
+        Task<T> GetById(int id);
+        Task<T> AddItem(T item);
+        Task UpdateItem(int id, T item);
+        Task DeleteItem(int id);
+    }
+}
