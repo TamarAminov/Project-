@@ -10,9 +10,9 @@ namespace WebApi.Controllers
     [ApiController]
     public class VendorAttributeController : ControllerBase
     {
-        private readonly IService<VendorAttributeDtoo> _attributeService;
+        private readonly Service.Services.IService<VendorAttributeDtoo> _attributeService;
 
-        public VendorAttributeController(IService<VendorAttributeDtoo> attributeService)
+        public VendorAttributeController(Service.Services.IService<VendorAttributeDtoo> attributeService)
         {
             _attributeService = attributeService;
         }

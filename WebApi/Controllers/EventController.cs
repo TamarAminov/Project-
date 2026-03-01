@@ -44,8 +44,10 @@
 //        }
 //    }
 //}
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Service.Dto.EventDto;
+using Service.Dto.EventTypeDto;
 using Service.Dto.UserDto;
 using Service.Services;
 
@@ -58,6 +60,7 @@ public class EventController : ControllerBase
     public EventController(IService<EventDtoo> eventService)
     {
         _eventService = eventService;
+
     }
 
     [HttpGet]
@@ -78,11 +81,22 @@ public class EventController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<EventDtoo>> Post([FromBody] EventDtoo eventDto)
+    public async Task<ActionResult<EventDtoo>> Post([FromBody] EventCreateDto eventDto)
     {
         if (eventDto == null) return BadRequest("Invalid event data.");
 
-        var newEvent = await _eventService.AddItem(eventDto);
+        var newEventDtoo = new EventDtoo
+        {
+            EventID = 0,
+            EventName = eventDto.EventName,
+            EventDate = eventDto.EventDate,
+            UserID = eventDto.UserID,
+            EventTypeID = eventDto.EventTypeID,
+            TotalBudget = eventDto.TotalBudget,
+            GuestCount = eventDto.GuestCount
+        };
+
+        var newEvent = await _eventService.AddItem(newEventDtoo);
         return CreatedAtAction(nameof(GetById), new { id = newEvent.EventID }, newEvent);
     }
 

@@ -1,4 +1,4 @@
-using AutoMapper;
+ï»¿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectEvent.Models;
@@ -7,6 +7,7 @@ using Repository.Interfaces;
 using Repository.Repositories;
 using Service.Dto.BudgetItemDto;
 using Service.Dto.EventDto;
+using Service.Dto.EventTypeDto;
 using Service.Dto.TasksDto;
 using Service.Dto.VendorAttributeDto;
 using Service.Dto.VendorDto;
@@ -16,7 +17,7 @@ using Service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
-// 1. úååãàé ùä-using äæä äåà äéçéã ìîòìä
+// 1. ÃºÃ¥Ã¥Ã£Ã Ã© Ã¹Ã¤-using Ã¤Ã¦Ã¤ Ã¤Ã¥Ã  Ã¤Ã©Ã§Ã©Ã£ Ã¬Ã®Ã²Ã¬Ã¤
 builder.Services.AddAutoMapper(typeof(Program));
 
 var config = new MapperConfiguration(cfg => {
@@ -37,28 +38,30 @@ var mapperConfig = new AutoMapper.MapperConfiguration(cfg =>
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 AutoMapper.IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
-// äøéùåí äæä ôåúø àú äùâéàä ù÷éáìú òëùéå:
+// Ã¤Ã¸Ã©Ã¹Ã¥Ã­ Ã¤Ã¦Ã¤ Ã´Ã¥ÃºÃ¸ Ã Ãº Ã¤Ã¹Ã¢Ã©Ã Ã¤ Ã¹Ã·Ã©Ã¡Ã¬Ãº Ã²Ã«Ã¹Ã©Ã¥:
 builder.Services.AddScoped<IContext, EventMaster>();
-// äøéùåí äæä çñø ìê åæä îä ùâåøí ì÷øéñä:
+// Ã¤Ã¸Ã©Ã¹Ã¥Ã­ Ã¤Ã¦Ã¤ Ã§Ã±Ã¸ Ã¬Ãª Ã¥Ã¦Ã¤ Ã®Ã¤ Ã¹Ã¢Ã¥Ã¸Ã­ Ã¬Ã·Ã¸Ã©Ã±Ã¤:
 //builder.Services.AddScoped(typeof(Repository.Interfaces.IRepository<User>), typeof(Repository.Repositories.UserRepository));
 builder.Services.AddScoped(typeof(Repository.Interfaces.IUserRepository), typeof(Repository.Repositories.UserRepository));
-// æä àåîø ìîòøëú: áëì ôòí ùîéùäå îá÷ù IRepository ùì îùäå, úáéà ìå àú äîçì÷ä Repository äëììéú
+// Ã¦Ã¤ Ã Ã¥Ã®Ã¸ Ã¬Ã®Ã²Ã¸Ã«Ãº: Ã¡Ã«Ã¬ Ã´Ã²Ã­ Ã¹Ã®Ã©Ã¹Ã¤Ã¥ Ã®Ã¡Ã·Ã¹ IRepository Ã¹Ã¬ Ã®Ã¹Ã¤Ã¥, ÃºÃ¡Ã©Ã  Ã¬Ã¥ Ã Ãº Ã¤Ã®Ã§Ã¬Ã·Ã¤ Repository Ã¤Ã«Ã¬Ã¬Ã©Ãº
 builder.Services.AddScoped<IUserService, UserService>();
 // --- ????? ?-Repositories (???? ?-Data) ---
 builder.Services.AddScoped<IRepository<Vendor>, VendorRepository>();
 builder.Services.AddScoped<IRepository<VendorAttribute>, VendorAttributeRepository>();
 builder.Services.AddScoped<IRepository<Event>, EventRepository>();
+builder.Services.AddScoped<IRepository<EventType>, EventTypeRepository>();
 builder.Services.AddScoped<IRepository<Tasks>, TaskRepository>();
 builder.Services.AddScoped<IRepository<BudgetItem>, BudgetItemRepository>();
 
+
 // --- ????? ?-Services (???? ???????) ---
 // ???? ?? ??-Controller ???? IService<VendorDtoo>, ??? ?? ???? ??????? ???:
-builder.Services.AddScoped<IService<VendorDtoo>, VendorService>();
-builder.Services.AddScoped<IService<VendorAttributeDtoo>, VendorAttributeService>();
-builder.Services.AddScoped<IService<EventDtoo>, EventService>();
-builder.Services.AddScoped<IService<TasksDtoo>, TasksService>();
-builder.Services.AddScoped<IService<BudgetItemDtoo>, BudgetItemService>();
-
+builder.Services.AddScoped<Service.Services.IService<VendorDtoo>, VendorService>();
+builder.Services.AddScoped<Service.Services.IService<VendorAttributeDtoo>, VendorAttributeService>();
+builder.Services.AddScoped<Service.Services.IService<EventDtoo>, EventService>();
+builder.Services.AddScoped<Service.Services.IService<TasksDtoo>, TasksService>();
+builder.Services.AddScoped<Service.Services.IService<BudgetItemDtoo>, BudgetItemService>();
+builder.Services.AddScoped<IGetService<EventTypeDtoo>, EventTypeService>();
 // ?? ?? ?? IUserService ???? ???? ?-User:
 builder.Services.AddScoped<IUserService, UserService>();
 //builder.Services.AddScoped<IRepository, UserRepository>();
@@ -73,36 +76,51 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+    options.AddPolicy("AllowReact", policy =>
+    {
+        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
+
+// â”€â”€ ×—×©×•×‘: ×”×¡×“×¨ ×—×™×™×‘ ×œ×”×™×•×ª ×›×š â”€â”€
+
+//var app = builder.Build();
+//app.UseCors("AllowReact");  // â† ×œ×¤× ×™ app.UseAuthorization
+//app.UseAuthorization();
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+//app.UseHttpsRedirection();
+
+//// Ã§Ã¹Ã¥Ã¡ Ã®Ã Ã¥Ã£: Ã¦Ã¤ Ã§Ã©Ã©Ã¡ Ã¬Ã¡Ã¥Ã  Ã¬Ã´Ã°Ã© app.MapControllers()
+
+
+//app.MapControllers();
+
+//app.Run();
+//// Ã¤Ã£Ã¸Ãª Ã¤Ã°Ã«Ã¥Ã°Ã¤ Ã¬Ã¸Ã¹Ã¥Ã­ Ã Ãº Ã¤-Profile
+//// Ã¤Ã´ÃºÃ¸Ã¥Ã¯ Ã¹Ã²Ã¥Ã·Ã³ Ã Ãº Ã¡Ã²Ã©Ã©Ãº Ã¤Ã¢Ã¸Ã±Ã Ã¥Ãº Ã¥Ã¤-typeof
+//// Ã©Ã¶Ã©Ã¸Ãº Ã·Ã¥Ã°Ã´Ã©Ã¢Ã¥Ã¸Ã¶Ã©Ã¤ Ã©Ã£Ã°Ã©Ãº Ã«Ã£Ã© Ã¬Ã²Ã·Ã¥Ã³ Ã Ãº Ã¡Ã²Ã©Ã©Ãº Ã¤Ã¢Ã¸Ã±Ã Ã¥Ãº
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-// çùåá îàåã: æä çééá ìáåà ìôğé app.MapControllers()
-app.UseCors("AllowAll");
-app.UseAuthorization();
-
-app.MapControllers();
+app.UseCors("AllowReact");        // â† 1. ×§×•×“× CORS
+// app.UseHttpsRedirection();     // â† 2. × ×˜×¨×œ×™ ××ª ×–×” ×‘×¤×™×ª×•×—!
+app.UseAuthorization();           // â† 3. ××—×¨ ×›×š Authorization
+app.MapControllers();             // â† 4. ×•×œ×‘×¡×•×£ Controllers
 
 app.Run();
-// äãøê äğëåğä ìøùåí àú ä-Profile
-// äôúøåï ùòå÷ó àú áòééú äâøñàåú åä-typeof
-// éöéøú ÷åğôéâåøöéä éãğéú ëãé ìò÷åó àú áòééú äâøñàåú
-
-
-// äâãøú äîéôåééí
-// äâãøä îôåøùú ùîååãàú ùéîåù á-AutoMapper äî÷åøé
+// Ã¤Ã¢Ã£Ã¸Ãº Ã¤Ã®Ã©Ã´Ã¥Ã©Ã©Ã­
+// Ã¤Ã¢Ã£Ã¸Ã¤ Ã®Ã´Ã¥Ã¸Ã¹Ãº Ã¹Ã®Ã¥Ã¥Ã£Ã Ãº Ã¹Ã©Ã®Ã¥Ã¹ Ã¡-AutoMapper Ã¤Ã®Ã·Ã¥Ã¸Ã©

@@ -51,6 +51,9 @@ namespace Service.Profiles
             CreateMap<EventType, EventTypeDtoo>().ReverseMap();
             CreateMap<EventDtoo, Event>()
             .ForMember(dest => dest.AllEventType, opt => opt.Ignore()); // אומר ל-Mapper: אל תנסה למפות את האובייקט הזה ב-Post
+            CreateMap<EventTypeDtoo, EventType>();
+            CreateMap<EventType, EventTypeDtoo>();
+
         }
     }
 

@@ -13,8 +13,8 @@ namespace Service.Dto.EventDto
         public int UserID { get; set; }
         //public UserDto.UserDtoo AllUser { get; set; }
 
-        public string EventTypeID { get; set; }
-        public EventTypeDto.EventTypeDtoo AllEventType { get; set; }
+        public int EventTypeID { get; set; }
+        public EventTypeDto.EventTypeDtoo? AllEventType { get; set; }
         public int TotalBudget { get; set; }
         public int GuestCount { get; set; }
         public ICollection<TasksDto.TasksDtoo>? Tasks { get; set; }
