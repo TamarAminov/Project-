@@ -35,14 +35,14 @@ namespace Service.Services
               await  repository.DeleteItem(id);
         }
 
-        public async  Task<List<EventDtoo>> GetAll(UserDtoo user)
+        public async  Task<List<EventDtoo>> GetAll(int id)
         {
-            if (user.Role == User.EnumRole.Manager)
-            {
-                var events1 = await repository.GetAll();
-                return mapper.Map<List<Event>, List<EventDtoo>>(events1);
-            }
-            var events= await repository.GetAll(user.UserID);
+            //if (user.Role == User.EnumRole.Manager)
+            //{
+            //    var events1 = await repository.GetAll();
+            //    return mapper.Map<List<Event>, List<EventDtoo>>(events1);
+            //}
+            var events= await repository.GetAll(id);
             return mapper.Map<List<Event>, List<EventDtoo>>(events);
         }
 

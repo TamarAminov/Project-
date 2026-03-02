@@ -22,9 +22,9 @@ namespace WebApi.Controllers
         // GET: api/<BudgetItemController>
         // 1. שליפת כל הפריטים (לפי הרשאות משתמש)
         [HttpGet]
-        public async Task<ActionResult<List<BudgetItemDtoo>>> GetAll([FromQuery] UserDtoo user)
+        public async Task<ActionResult<List<BudgetItemDtoo>>> GetAll(int id)
         {
-            var items = await _budgetItemService.GetAll(user);
+            var items = await _budgetItemService.GetAll(id);
             return Ok(items);
         }
 

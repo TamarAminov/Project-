@@ -58,9 +58,9 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TasksDtoo>>> Get([FromQuery] UserDtoo user)
+    public async Task<ActionResult<List<TasksDtoo>>> Get(int id)
     {
-        var tasks = await _tasksService.GetAll(user);
+        var tasks = await _tasksService.GetAll(id);
         return Ok(tasks);
     }
 

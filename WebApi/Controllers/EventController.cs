@@ -64,9 +64,9 @@ public class EventController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<EventDtoo>>> Get([FromQuery] UserDtoo user)
+    public async Task<ActionResult<List<EventDtoo>>> Get(int id)
     {
-        var events = await _eventService.GetAll(user);
+        var events = await _eventService.GetAll(id);
         return Ok(events);
     }
 

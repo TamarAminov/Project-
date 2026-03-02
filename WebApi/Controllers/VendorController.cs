@@ -58,9 +58,9 @@ public class VendorController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<VendorDtoo>>> Get([FromQuery] UserDtoo user)
+    public async Task<ActionResult<List<VendorDtoo>>> Get(int id)
     {
-        return Ok(await _vendorService.GetAll(user));
+        return Ok(await _vendorService.GetAll(id));
     }
 
     [HttpGet("{id}")]
