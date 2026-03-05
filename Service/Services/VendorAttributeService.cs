@@ -42,15 +42,15 @@ namespace Service.Services
            await repository.DeleteItem(id);
         }
 
-        public async Task<List<VendorAttributeDtoo>> GetAll(UserDtoo user)
+        public async Task<List<VendorAttributeDtoo>> GetAll(int id)
         {
 
-            if (user.Role == User.EnumRole.Manager)
-            {
-                var vendorAttributes =await repository.GetAll();
-                return mapper.Map<List<VendorAttribute>, List<VendorAttributeDtoo>>(vendorAttributes);
-            }
-            var item= await repository.GetAll(user.UserID);
+            //if (user.Role == User.EnumRole.Manager)
+            //{
+            //    var vendorAttributes =await repository.GetAll();
+            //    return mapper.Map<List<VendorAttribute>, List<VendorAttributeDtoo>>(vendorAttributes);
+            //}
+            var item= await repository.GetAll(id);
             return mapper.Map<List<VendorAttribute>, List<VendorAttributeDtoo>>(item);
         }
 

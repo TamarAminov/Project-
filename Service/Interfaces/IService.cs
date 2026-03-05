@@ -10,7 +10,7 @@ namespace Service.Services
 {
     public interface IService<T>
     {
-        Task<List<T>> GetAll(UserDtoo user);
+        Task<List<T>> GetAll(int id);
         Task<T> GetById(int id);
         Task<T> AddItem(T item);
         Task<T> UpdateItem(int id, T item);

@@ -36,14 +36,14 @@ namespace Service.Services
             //to check
         }
 
-        public async Task<List<BudgetItemDtoo>> GetAll(UserDtoo user)
+        public async Task<List<BudgetItemDtoo>> GetAll(int id)
         {
-            if (user.Role == User.EnumRole.Manager)
-            {
-                var budgets = await repository.GetAll();
-                return mapper.Map<List<BudgetItem>, List<BudgetItemDtoo>>(budgets);
-            }
-            var bi = await repository.GetAll(user.UserID);
+            //if (user.Role == User.EnumRole.Manager)
+            //{
+            //    var budgets = await repository.GetAll();
+            //    return mapper.Map<List<BudgetItem>, List<BudgetItemDtoo>>(budgets);
+            //}
+            var bi = await repository.GetAll(id);
             return mapper.Map<List<BudgetItem>, List<BudgetItemDtoo>>(bi);
         }
 

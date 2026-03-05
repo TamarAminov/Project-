@@ -19,9 +19,9 @@ namespace WebApi.Controllers
 
         // 1. שליפת כל המאפיינים (סינון לפי משתמש/מנהל בתוך ה-Service)
         [HttpGet]
-        public async Task<ActionResult<List<VendorAttributeDtoo>>> Get([FromQuery] UserDtoo user)
+        public async Task<ActionResult<List<VendorAttributeDtoo>>> Get(int id)
         {
-            var attributes = await _attributeService.GetAll(user);
+            var attributes = await _attributeService.GetAll(id);
             return Ok(attributes);
         }
 
