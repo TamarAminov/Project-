@@ -8,6 +8,7 @@ using Repository.Entities;
 using Repository.Interfaces;
 using Repository.Repositories;
 using Service.Dto.BudgetItemDto;
+using Service.Dto.CategoryDto;
 using Service.Dto.EventDto;
 using Service.Dto.EventTypeDto;
 using Service.Dto.TasksDto;
@@ -55,6 +56,7 @@ builder.Services.AddScoped<IRepository<Event>, EventRepository>();
 builder.Services.AddScoped<IRepository<EventType>, EventTypeRepository>();
 builder.Services.AddScoped<IRepository<Tasks>, TaskRepository>();
 builder.Services.AddScoped<IRepository<BudgetItem>, BudgetItemRepository>();
+builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 
 
 // --- ????? ?-Services (???? ???????) ---
@@ -65,8 +67,10 @@ builder.Services.AddScoped<Service.Services.IService<EventDtoo>, EventService>()
 builder.Services.AddScoped<Service.Services.IService<TasksDtoo>, TasksService>();
 builder.Services.AddScoped<Service.Services.IService<BudgetItemDtoo>, BudgetItemService>();
 builder.Services.AddScoped<IGetService<EventTypeDtoo>, EventTypeService>();
+builder.Services.AddScoped<IGetService<CategoryDtoo>, CategoryService>();
 // ?? ?? ?? IUserService ???? ???? ?-User:
 builder.Services.AddScoped<IUserService, UserService>();
+
 //builder.Services.AddScoped<IRepository, UserRepository>();
 
 
