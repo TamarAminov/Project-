@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto.UserDto;
 using Service.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Service.Services
 {
@@ -111,7 +115,7 @@ namespace Service.Services
             return mapper.Map<UserDtoo>(userEntity);
         }
 
-      
+
         //public UserChangePasswordDto GetById(int id)
         //{
         //    // 1. מבקשים מה-Repository למצוא את המשתמש לפי ה-ID שלו במסד הנתונים
@@ -123,6 +127,17 @@ namespace Service.Services
         //    // 2. הופכים את הישות שמצאנו ל-DTO (האריזה היפה שכוללת את האירועים)
         //    return mapper.Map<UserChangePasswordDto>(userEntity);
         //}
+        public string GenerateToken(UserDtoo user)
+        {
+            var claims = new[] {
+        new Claim("userID", user.UserID.ToString()),
+        new Claim("email", user.UserEmail)
+    };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("wsxcde345*&^SDFG478euwryiowew8e85683FQWTRTW-34908;29-09RR2"));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(expires: DateTime.Now.AddDays(7), signingCredentials: creds, claims: claims);
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 
 

@@ -90,7 +90,8 @@ namespace WebApi.Controllers
             var resultUser = await service.Login(user);
             if (resultUser == null)
                 return NotFound("User not found or incorrect password.");
-            return Ok(resultUser);
+            //return Ok(resultUser);
+            return Ok(new { token = service.GenerateToken(resultUser), user = resultUser });
         }
       
     }

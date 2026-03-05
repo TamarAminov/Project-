@@ -1,4 +1,5 @@
-﻿using Repository.Interfaces;
+﻿using Repository.Entities;
+using Repository.Interfaces;
 using Service.Dto.UserDto;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace Service.Interfaces
         Task<UserDtoo> GetById(int id);
         Task<UserDtoo> Login(UserLoginDto user);
         //UserChangePasswordDto GetById(int id);
+        string GenerateToken(UserDtoo user);
 
     }
 }
