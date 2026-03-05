@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Repository.Entities;
 using Service.Dto.BudgetItemDto;
+using Service.Dto.CategoryDto;
 using Service.Dto.EventDto;
 using Service.Dto.EventTypeDto;
 using Service.Dto.TasksDto;
@@ -53,6 +54,12 @@ namespace Service.Profiles
             .ForMember(dest => dest.AllEventType, opt => opt.Ignore()); // אומר ל-Mapper: אל תנסה למפות את האובייקט הזה ב-Post
             CreateMap<EventTypeDtoo, EventType>();
             CreateMap<EventType, EventTypeDtoo>();
+            CreateMap<Category, CategoryDtoo>();
+            CreateMap<CategoryDtoo, Category>();
+
+
+
+
 
         }
     }
