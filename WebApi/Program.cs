@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using ProjectEvent.Models;
 using Repository.Entities;
 using Repository.Interfaces;
@@ -14,6 +16,7 @@ using Service.Dto.VendorDto;
 using Service.Interfaces;
 using Service.Profiles;
 using Service.Services;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -83,6 +86,17 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YOUR_SECRET_KEY_MIN_16_CHARS")),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
 
 // ── חשוב: הסדר חייב להיות כך ──
 
@@ -120,7 +134,8 @@ app.UseCors("AllowReact");        // ← 1. קודם CORS
 // app.UseHttpsRedirection();     // ← 2. נטרלי את זה בפיתוח!
 app.UseAuthorization();           // ← 3. אחר כך Authorization
 app.MapControllers();             // ← 4. ולבסוף Controllers
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
 // äâãøú äîéôåééí
 // äâãøä îôåøùú ùîååãàú ùéîåù á-AutoMapper äî÷åøé
