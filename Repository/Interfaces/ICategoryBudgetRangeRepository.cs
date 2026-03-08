@@ -8,10 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Interfaces
 {
-    public interface ICategoryBudgetRangeRepository : IRepository<CategoryBudgetRange>
+public ICategoryBudgetRangeRepository
     {
-
-        Task<CategoryBudgetRange> GetByBudget(int categoryId, double totalBudget);
-       
     }
 }
