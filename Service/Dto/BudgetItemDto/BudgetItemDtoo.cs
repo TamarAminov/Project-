@@ -24,6 +24,8 @@ namespace Service.Dto.BudgetItemDto
 
         public int PlannedAmount { get; set; }
         public int ActualAmount { get; set; }// בהתחלה 0
+        public bool IsIgnore { get; set; }
+        public bool IsLocked { get; set; }
         public int VendorID { get; set; }
         public VendorDto.VendorDtoo AllVendor{ get; set; }
     }
