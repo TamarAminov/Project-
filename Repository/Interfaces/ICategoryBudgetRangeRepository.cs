@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Repository.Interfaces
 {
-public ICategoryBudgetRangeRepository
+    public interface ICategoryBudgetRangeRepository :  IRepository<CategoryBudgetRange>
     {
+
     }
 }

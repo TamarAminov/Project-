@@ -23,8 +23,8 @@ namespace Repository.Repositories
             return item;
         }
 
-        public async Task<Event> BudgetsDefault(int id)
-        {
+        //public async Task<Event> BudgetsDefault(int id)
+       // {
         //    return await _context.Events
         //.Include(e => e.BudgetItems)
         //.Include(e => e.EventTypeID)
@@ -44,7 +44,7 @@ namespace Repository.Repositories
         //        }).ToList()
         //})
         //.FirstOrDefaultAsync();
-        }
+        //}
 
         public async Task DeleteItem(int id)
         {
