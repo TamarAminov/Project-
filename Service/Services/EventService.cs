@@ -87,6 +87,7 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Repository.Entities;
 using Repository.Interfaces;
+using Repository.Repositories;
 using Service.Dto.BudgetItemDto;
 using Service.Dto.EventDto;
 using Service.Dto.UserDto;
