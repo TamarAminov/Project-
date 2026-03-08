@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Repository.Entities;
 using Repository.Interfaces;
+using Repository.Repositories;
 using Service.Dto.BudgetItemDto;
 using Service.Dto.EventDto;
 using Service.Dto.UserDto;
@@ -16,9 +17,9 @@ namespace Service.Services
 {
     public class EventService : IEventService
     {
-        private readonly IRepository<Event> repository;
+        private readonly IEventRepository repository;
         private readonly IMapper mapper;
-        public EventService(IRepository<Event> repository, IMapper mapper)
+        public EventService(IEventRepository repository, IMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;
@@ -38,9 +39,10 @@ namespace Service.Services
               await  repository.DeleteItem(id);
         }
 
-        public Task<EventDtoo> DevideBudgetsDefualt(int id)
+        public async Task<EventDtoo> DevideBudgetsDefualt(int id)
         {
-            
+            var result = await repository.BudgetsDefault(id);
+            return mapper.Map<EventDtoo>(result);
         }
 
         public async  Task<List<EventDtoo>> GetAll(int id)

@@ -19,6 +19,7 @@ namespace Repository.Interfaces
         public DbSet<VendorAttribute> VendorAttributes { get; }
         public DbSet<EventType> EventType { get; }
         public DbSet<Category> Category { get; }
+        public DbSet<CategoryBudgetRange> CategoryBudgetRanges { get; }
        
 
 

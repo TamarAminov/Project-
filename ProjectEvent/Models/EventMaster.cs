@@ -25,6 +25,7 @@ namespace ProjectEvent.Models
         public virtual DbSet<VendorAttribute> VendorAttributes { get; set; }
         public virtual DbSet<EventType> EventType { get; set; }
         public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<CategoryBudgetRange> CategoryBudgetRanges { get; set; }
 
 
 
@@ -41,6 +42,7 @@ namespace ProjectEvent.Models
         DbSet<VendorAttribute> IContext.VendorAttributes => VendorAttributes;
         DbSet<EventType> IContext.EventType => EventType;
         DbSet<Category> IContext.Category => Category;
+        DbSet<CategoryBudgetRange> IContext.CategoryBudgetRanges => CategoryBudgetRanges;
 
 
 

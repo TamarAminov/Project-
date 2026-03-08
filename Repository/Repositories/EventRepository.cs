@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class EventRepository : IRepository<Event>
+    public class EventRepository : IEventRepository
     {
         private readonly IContext _context;
         public EventRepository(IContext context)
@@ -22,6 +22,30 @@ namespace Repository.Repositories
             await _context.save();
             return item;
         }
+
+        public async Task<Event> BudgetsDefault(int id)
+        {
+        //    return await _context.Events
+        //.Include(e => e.BudgetItems)
+        //.Include(e => e.EventTypeID)
+        //    .ThenInclude(et => et.CategoryBudgetRanges)
+        //.Where(e => e.Id == id)
+        //.Select(e => new Event
+        //{
+        //    ...e,
+        //    BudgetItems = e.EventType.CategoryBudgetRanges
+        //        .Where(r => r.MinBudget <= e.TotalBudget
+        //            && (r.MaxBudget == 0 || r.MaxBudget >= e.TotalBudget))
+        //        .Select(r => new BudgetItem
+        //        {
+        //            EventID = id,
+        //            CategoryID = r.CategoryID,
+        //            PlannedAmount = (int)(e.TotalBudget * r.Percentage)
+        //        }).ToList()
+        //})
+        //.FirstOrDefaultAsync();
+        }
+
         public async Task DeleteItem(int id)
         {
             var events=await GetById(id);

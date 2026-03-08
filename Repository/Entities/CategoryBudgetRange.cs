@@ -19,6 +19,6 @@ namespace Repository.Entities
         public double Percentage { get; set; }
 
         // Navigation Property
-        public EventType Category { get; set; }
+        //public EventType Category { get; set; }
     }
 }
