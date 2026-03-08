@@ -9,6 +9,6 @@ namespace Repository.Interfaces
 {
     public interface IEventRepository: IRepository<Event>
     {
-        public async Task<Event> BudgetsDefault(int id);
+        //public Task<Event> BudgetsDefault(int id);
     }
 }

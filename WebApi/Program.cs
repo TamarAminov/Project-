@@ -8,6 +8,8 @@ using Repository.Entities;
 using Repository.Interfaces;
 using Repository.Repositories;
 using Service.Dto.BudgetItemDto;
+using Service.Dto.CategoryBudgetRangeDto;
+using Service.Dto.CategoryDto;
 using Service.Dto.EventDto;
 using Service.Dto.EventTypeDto;
 using Service.Dto.TasksDto;
@@ -55,20 +57,37 @@ builder.Services.AddScoped<IRepository<Event>, EventRepository>();
 builder.Services.AddScoped<IRepository<EventType>, EventTypeRepository>();
 builder.Services.AddScoped<IRepository<Tasks>, TaskRepository>();
 builder.Services.AddScoped<IRepository<BudgetItem>, BudgetItemRepository>();
+builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+builder.Services.AddScoped<IRepository<Area>, AreaRepository>();
+builder.Services.AddScoped<IRepository<Tasks>, TaskRepository>();
+builder.Services.AddScoped<IRepository<CategoryBudgetRange>, CategoryBudgetRangeRepository>();
+// הזרקה עבור ה-Repository של טווח תקציב קטגוריה
+builder.Services.AddScoped<ICategoryBudgetRangeRepository, CategoryBudgetRangeRepository>();
+builder.Services.AddScoped<IVendorRepository, VendorRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 
-
-// --- ????? ?-Services (???? ???????) ---
-// ???? ?? ??-Controller ???? IService<VendorDtoo>, ??? ?? ???? ??????? ???:
-builder.Services.AddScoped<Service.Services.IService<VendorDtoo>, VendorService>();
-builder.Services.AddScoped<Service.Services.IService<VendorAttributeDtoo>, VendorAttributeService>();
-builder.Services.AddScoped<Service.Services.IService<EventDtoo>, EventService>();
-builder.Services.AddScoped<Service.Services.IService<TasksDtoo>, TasksService>();
-builder.Services.AddScoped<Service.Services.IService<BudgetItemDtoo>, BudgetItemService>();
-builder.Services.AddScoped<IGetService<EventTypeDtoo>, EventTypeService>();
-// ?? ?? ?? IUserService ???? ???? ?-User:
+//builder.Services.AddScoped<IService<VendorDtoo>, VendorService>();
+builder.Services.AddScoped<IService<VendorAttributeDtoo>, VendorAttributeService>();
+//builder.Services.AddScoped<IService<EventDtoo>, EventService>();
+builder.Services.AddScoped<IService<TasksDtoo>, TasksService>();
+//builder.Services.AddScoped<IService<BudgetItemDtoo>, BudgetItemService>();
+//builder.Services.AddScoped<IGetService<EventTypeDtoo>, EventTypeService>();
+//// ?? ?? ?? IUserService ???? ???? ?-User:
+//builder.Services.AddScoped<IUserService, UserService>();
+////builder.Services.AddScoped<IRepository, UserRepository>();
+builder.Services.AddScoped<IService<CategoryBudgetRangeDtoo>,CategoryBudgetRangeService>();
 builder.Services.AddScoped<IUserService, UserService>();
-//builder.Services.AddScoped<IRepository, UserRepository>();
+builder.Services.AddScoped<IVendorService, VendorService>();
+builder.Services.AddScoped<IBudgetItemService, BudgetItemService>();
+builder.Services.AddScoped<IEventService, EventService>();
 
+// Generic IService<T>
+//builder.Services.AddScoped<IService<VendorAttributeDto>, VendorAttributeService>();
+//builder.Services.AddScoped<IService<TasksDto>, TasksService>();
+builder.Services.AddScoped<IService<CategoryBudgetRangeDtoo>, CategoryBudgetRangeService>();
+
+// Generic IGetService<T> (read-only services)
+builder.Services.AddScoped<IGetService<EventTypeDtoo>, EventTypeService>();
 
 // Add services to the container.
 
@@ -98,30 +117,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
-// ── חשוב: הסדר חייב להיות כך ──
-
-//var app = builder.Build();
-//app.UseCors("AllowReact");  // ← לפני app.UseAuthorization
-//app.UseAuthorization();
-//// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
-//app.UseHttpsRedirection();
-
-//// çùåá îàåã: æä çééá ìáåà ìôðé app.MapControllers()
-
-
-//app.MapControllers();
-
-//app.Run();
-//// äãøê äðëåðä ìøùåí àú ä-Profile
-//// äôúøåï ùòå÷ó àú áòééú äâøñàåú åä-typeof
-//// éöéøú ÷åðôéâåøöéä éãðéú ëãé ìò÷åó àú áòééú äâøñàåú
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -133,9 +128,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowReact");        // ← 1. קודם CORS
 // app.UseHttpsRedirection();     // ← 2. נטרלי את זה בפיתוח!
 app.UseAuthorization();           // ← 3. אחר כך Authorization
-app.MapControllers();             // ← 4. ולבסוף Controllers
-app.UseAuthentication();
 app.UseAuthorization();
+app.UseAuthentication();
+app.MapControllers();             // ← 4. ולבסוף Controllers
 app.Run();
-// äâãøú äîéôåééí
-// äâãøä îôåøùú ùîååãàú ùéîåù á-AutoMapper äî÷åøé

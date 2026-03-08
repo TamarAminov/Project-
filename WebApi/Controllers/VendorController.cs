@@ -44,15 +44,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Dto.UserDto;
 using Service.Dto.VendorDto;
+using Service.Interfaces;
 using Service.Services;
 
 [Route("api/[controller]")]
 [ApiController]
 public class VendorController : ControllerBase
 {
-    private readonly IService<VendorDtoo> _vendorService;
+    private readonly IVendorService _vendorService;
 
-    public VendorController(IService<VendorDtoo> vendorService)
+    public VendorController(IVendorService vendorService)
     {
         _vendorService = vendorService;
     }
