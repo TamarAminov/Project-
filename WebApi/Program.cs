@@ -88,6 +88,12 @@ builder.Services.AddScoped<IService<CategoryBudgetRangeDtoo>, CategoryBudgetRang
 
 // Generic IGetService<T> (read-only services)
 builder.Services.AddScoped<IGetService<EventTypeDtoo>, EventTypeService>();
+builder.Services.AddScoped<IGetService<CategoryDtoo>, CategoryService>();
+// ?? ?? ?? IUserService ???? ???? ?-User:
+builder.Services.AddScoped<IUserService, UserService>();
+
+//builder.Services.AddScoped<IRepository, UserRepository>();
+
 
 // Add services to the container.
 
