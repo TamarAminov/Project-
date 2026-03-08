@@ -20,6 +20,8 @@ namespace Repository.Entities
         public virtual Category AllCategory { get; set; }
         public int PlannedAmount { get; set; }
         public int ActualAmount { get; set; }
+        public bool IsIgnore { get; set; }
+        public bool IsLocked { get; set; }
         public int? VendorID { get; set; }
         public Vendor? Vendor { get; set; }
     }

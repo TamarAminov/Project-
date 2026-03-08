@@ -52,6 +52,8 @@ namespace Repository.Repositories
             budgetItem.CategoryID = item.CategoryID;
             budgetItem.ActualAmount = item.ActualAmount;
             budgetItem.VendorID = item.VendorID;
+            budgetItem.IsIgnore = item.IsIgnore;
+            budgetItem.IsLocked = item.IsLocked;
             budgetItem.Vendor = item.Vendor;
             budgetItem.PlannedAmount = item.PlannedAmount;
             _context.BudgetItems.Update(budgetItem);

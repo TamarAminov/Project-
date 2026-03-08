@@ -5,6 +5,7 @@ using Service.Dto.EventDto;
 using Service.Dto.TasksDto;
 using Service.Dto.UserDto;
 using Service.Dto.VendorDto;
+using Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,11 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Service.Services
 {
-    public class VendorService : IService<VendorDtoo>
+    public class VendorService : IVendorService
     {
-        private readonly IRepository<Vendor> repository;
+        private readonly IVendorRepository repository;
         private readonly IMapper mapper;
-        public VendorService(IRepository<Vendor> repository, IMapper mapper)
+        public VendorService(IVendorRepository repository, IMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;
@@ -56,6 +57,16 @@ namespace Service.Services
                 return null; // או לזרוק Exception לפי החלטה
             }
             return mapper.Map<Vendor, VendorDtoo>(vendor);
+        }
+
+        public async Task<int> GetMaxPriceOfVendorByCategory(int categoryId)
+        {
+           return await repository.GetMaxPriceOfVendorByCategory(categoryId);
+        }
+
+        public async Task<int> GetMinPriceOfVendorByCategory(int categoryId)
+        {
+            return await repository.GetMinPriceOfVendorByCategory(categoryId);
         }
 
         public async Task<VendorDtoo> UpdateItem(int id, VendorDtoo item)

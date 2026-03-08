@@ -5,6 +5,7 @@ using Repository.Interfaces;
 using Service.Dto.BudgetItemDto;
 using Service.Dto.EventDto;
 using Service.Dto.UserDto;
+using Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Service.Services
 {
-    public class EventService : IService<EventDtoo>
+    public class EventService : IEventService
     {
         private readonly IRepository<Event> repository;
         private readonly IMapper mapper;
@@ -22,17 +23,24 @@ namespace Service.Services
             this.repository = repository;
             this.mapper = mapper;
         }
+
         public async Task<EventDtoo> AddItem(EventDtoo item)
         {
             var EventEntity = mapper.Map<Event>(item);
             EventEntity.EventID = 0;
             var i = await repository.AddItem(EventEntity);
+            //////////////
             return  mapper.Map<Event, EventDtoo>(i);
         }
 
         public async Task DeleteItem(int id)
         {
               await  repository.DeleteItem(id);
+        }
+
+        public Task<EventDtoo> DevideBudgetsDefualt(int id)
+        {
+            
         }
 
         public async  Task<List<EventDtoo>> GetAll(int id)

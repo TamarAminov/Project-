@@ -5,6 +5,7 @@ using Service.Dto.BudgetItemDto;
 using Service.Dto.EventDto;
 using Service.Dto.TasksDto;
 using Service.Dto.UserDto;
+using Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Service.Services
 {
-    public class BudgetItemService : IService<BudgetItemDtoo>
+    public class BudgetItemService : IBudgetItemService
     {
         private readonly IRepository<BudgetItem> repository;
         private readonly IMapper mapper;
@@ -28,6 +29,29 @@ namespace Service.Services
             bi.BudgetItemID = 0;
             var i = await repository.AddItem(bi);
             return mapper.Map<BudgetItem, BudgetItemDtoo>(i);
+        }
+
+        public async Task<BudgetItemDtoo> ChangeIngore(int id)
+        {
+            var item = await repository.GetById(id);
+            if (item == null) throw new Exception("Item not found");
+
+            item.IsIgnore = !item.IsIgnore; // הופך את המצב הנוכחי
+
+            await repository.UpdateItem(item.BudgetItemID,item);
+            return mapper.Map<BudgetItemDtoo>(item);
+        }
+
+        public async Task<BudgetItemDtoo> ChangeLock(int id)
+        {
+            var item = await repository.GetById(id);
+            if (item == null) throw new Exception("Item not found");
+
+            
+            item.IsLocked = !item.IsLocked; // הופך את המצב הנוכחי
+            
+            await repository.UpdateItem(item.BudgetItemID, item);
+            return mapper.Map<BudgetItemDtoo>(item);
         }
 
         public async Task DeleteItem(int id)

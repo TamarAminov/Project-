@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class VendorRepository : IRepository<Vendor>
+    public class VendorRepository : IVendorRepository
     {
         private readonly IContext _context;
         public VendorRepository(IContext context)
@@ -43,6 +43,20 @@ namespace Repository.Repositories
         public async Task<Vendor> GetById(int id)
         {
             return await _context.Vendors.FirstOrDefaultAsync(X => X.VendorID == id);
+        }
+
+        public async Task<int> GetMaxPriceOfVendorByCategory(int categoryId)
+        {
+            return await _context.Vendors
+            .Where(b => b.CategoryID == categoryId)
+            .MaxAsync(b => (int)b.BasePrice);
+        }
+
+        public async Task<int> GetMinPriceOfVendorByCategory(int categoryId)
+        {
+            return await _context.Vendors
+            .Where(b => b.CategoryID == categoryId)
+            .MinAsync(b => (int)b.BasePrice);
         }
 
         public async Task UpdateItem(int id, Vendor item)
