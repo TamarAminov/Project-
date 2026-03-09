@@ -17,7 +17,7 @@ namespace Service.Dto.BudgetItemDto
 
         //public string VendorName { get; set; }
         public int BudgetItemID { get; set; }
-        public string EventID { get; set; }
+        public int EventID { get; set; }
        // public virtual EventDto AllEvent { get; set; }
         public int CategoryID { get; set; }
         public virtual CategoryDto.CategoryDtoo AllCategory { get; set; }

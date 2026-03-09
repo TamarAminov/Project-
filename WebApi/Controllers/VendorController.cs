@@ -86,4 +86,16 @@ public class VendorController : ControllerBase
         if (updated == null) return NotFound();
         return Ok(updated);
     }
+
+    [HttpGet("minPrice/{categoryId}")]
+    public async Task<ActionResult<int>> GetMinPrice(int categoryId)
+    {
+        return Ok(await _vendorService.GetMinPriceOfVendorByCategory(categoryId));
+    }
+
+    [HttpGet("maxPrice/{categoryId}")]
+    public async Task<ActionResult<int>> GetMaxPrice(int categoryId)
+    {
+        return Ok(await _vendorService.GetMaxPriceOfVendorByCategory(categoryId));
+    }
 }

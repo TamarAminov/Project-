@@ -80,6 +80,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVendorService, VendorService>();
 builder.Services.AddScoped<IBudgetItemService, BudgetItemService>();
 builder.Services.AddScoped<IEventService, EventService>();
+// Program.cs
+builder.Services.AddScoped<IService<EventDtoo>, EventService>();
 
 // Generic IService<T>
 //builder.Services.AddScoped<IService<VendorAttributeDto>, VendorAttributeService>();

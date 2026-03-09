@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectEvent.Models;
 
@@ -11,9 +12,11 @@ using ProjectEvent.Models;
 namespace ProjectEvent.Migrations
 {
     [DbContext(typeof(EventMaster))]
-    partial class EventMasterModelSnapshot : ModelSnapshot
+    [Migration("20260309111103_withDevide")]
+    partial class withDevide
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
