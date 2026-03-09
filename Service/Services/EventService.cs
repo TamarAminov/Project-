@@ -123,6 +123,7 @@ namespace Service.Services
             await DevideBudgetsDefualt(i.EventID);
             // שליפה מחדש עם התקציבים הטריים מה-DB
             var finalEvent = await repository.GetById(i.EventID);
+            //await repository.UpdateItem(finalEvent.EventID, finalEvent);
 
             return mapper.Map<Event, EventDtoo>(finalEvent);
         }

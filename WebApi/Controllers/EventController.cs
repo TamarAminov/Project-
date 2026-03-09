@@ -69,6 +69,7 @@ public class EventController : ControllerBase
         var events = await _eventService.GetAll(id);
         return Ok(events);
     }
+   
 
     [HttpGet("{id}")]
     public async Task<ActionResult<EventDtoo>> GetById(int id)
@@ -79,7 +80,7 @@ public class EventController : ControllerBase
 
         return Ok(eventItem);
     }
-
+    
     [HttpPost]
     public async Task<ActionResult<EventDtoo>> Post([FromBody] EventCreateDto eventDto)
     {
