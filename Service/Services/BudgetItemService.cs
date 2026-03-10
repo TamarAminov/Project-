@@ -89,8 +89,9 @@ namespace Service.Services
             // 2. מיפוי ועדכון
             var budgetsToUpdate = mapper.Map<BudgetItemDtoo, BudgetItem>(item);
             budgetsToUpdate.BudgetItemID = id;
-
-           await repository.UpdateItem(budgetsToUpdate.BudgetItemID, budgetsToUpdate);
+            budgetsToUpdate.VendorID = existingItem.VendorID; // ← שמור את הערך המקורי מה-DB
+            budgetsToUpdate.Vendor = existingItem.Vendor;      // ← שמור את הערך המקורי מה-DB
+            await repository.UpdateItem(budgetsToUpdate.BudgetItemID, budgetsToUpdate);
 
 
 

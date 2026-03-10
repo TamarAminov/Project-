@@ -85,7 +85,25 @@ namespace WebApi.Controllers
             await _budgetItemService.DeleteItem(id);
             return NoContent();
         }
+        [HttpPost("UpdateMultiple")]
+        public async Task<IActionResult> UpdateMultiple([FromBody] List<BudgetItemDtoo> items)
+        {
+            if (items == null || !items.Any()) return BadRequest();
 
+            try
+            {
+                foreach (var item in items)
+                {
+                    // לוגיקה לעדכון כל פריט ב-DB
+                    await _budgetItemService.UpdateItem(item.BudgetItemID,item);
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
         //using Microsoft.AspNetCore.Mvc;
         //using Service.Dto.BudgetItemDto;
         //using Service.Dto.UserDto;

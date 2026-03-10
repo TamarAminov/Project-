@@ -70,7 +70,7 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IService<VendorAttributeDtoo>, VendorAttributeService>();
 //builder.Services.AddScoped<IService<EventDtoo>, EventService>();
 builder.Services.AddScoped<IService<TasksDtoo>, TasksService>();
-//builder.Services.AddScoped<IService<BudgetItemDtoo>, BudgetItemService>();
+builder.Services.AddScoped<IService<BudgetItemDtoo>, BudgetItemService>();
 //builder.Services.AddScoped<IGetService<EventTypeDtoo>, EventTypeService>();
 //// ?? ?? ?? IUserService ???? ???? ?-User:
 //builder.Services.AddScoped<IUserService, UserService>();
@@ -135,8 +135,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowReact");        // ← 1. קודם CORS
 // app.UseHttpsRedirection();     // ← 2. נטרלי את זה בפיתוח!
-app.UseAuthorization();           // ← 3. אחר כך Authorization
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();           // ← 3. אחר כך Authorization
 app.MapControllers();             // ← 4. ולבסוף Controllers
 app.Run();
