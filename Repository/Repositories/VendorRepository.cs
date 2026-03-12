@@ -37,7 +37,7 @@ namespace Repository.Repositories
 
         public async Task<List<Vendor>> GetAll(int id)
         {
-            return _context.Vendors.Where(x => x.VendorID == id).ToList();
+            return _context.Vendors.Where(x => x.CategoryID == id).ToList();
         }
 
         public async Task<Vendor> GetById(int id)
