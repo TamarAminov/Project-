@@ -98,4 +98,11 @@ public class VendorController : ControllerBase
     {
         return Ok(await _vendorService.GetMaxPriceOfVendorByCategory(categoryId));
     }
+
+    [HttpPost("event/{eventId}")]
+    public async Task<ActionResult> AddVendorsToEvent(int eventId, [FromBody] List<int> vendorIds)
+    {
+        await _vendorService.AddVendorsToEvent(eventId, vendorIds);
+        return Ok();
+    }
 }

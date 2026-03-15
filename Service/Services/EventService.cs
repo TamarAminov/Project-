@@ -144,13 +144,42 @@ namespace Service.Services
 
             // 3. סינון הטווח הרלוונטי לתקציב האירוע
             var relevantRules = allRanges.Where(r =>
+           
                 eventEntity.TotalBudget >= r.MinBudget &&
                 (r.MaxBudget == 0 || eventEntity.TotalBudget <= r.MaxBudget)
             ).ToList();
-
+            
             // 4. יצירת פריטי התקציב ושמירה ב-DB
             foreach (var rule in relevantRules)
             {
+                //var basePlanned = (int)(eventEntity.TotalBudget * (rule.Percentage / 100));
+
+                //var newItem = new BudgetItem
+                //{
+                //    EventID = eventId,
+                //    CategoryID = rule.CategoryID,
+                //    PlannedAmount = rule.CategoryID == 3
+                //    ? (int)(rule.Percentage * eventEntity.GuestCount)  // ✅ מחיר מנה * אורחים
+                //    : (int)(eventEntity.TotalBudget * (rule.Percentage / 100)),  // ✅ אחוז מהתקציב
+                //    ActualAmount = 0,
+                //    IsIgnore = false,
+                //    IsLocked = false,
+                //};
+                ////if (rule.CategoryID == 3)
+                ////{
+                //    var newItem = new BudgetItem
+                //    {
+                //        EventID = eventId,
+                //        CategoryID = rule.CategoryID,
+                //        PlannedAmount = (int)(eventEntity.TotalBudget * (rule.Percentage / 100)*eventEntity.GuestCount),
+                //        ActualAmount = 0,
+                //        IsIgnore = false,
+                //        IsLocked = false,
+                //    };
+                //    await budgetItemRepository.AddItem(newItem);
+                //}
+                //else
+                //{
                 var newItem = new BudgetItem
                 {
                     EventID = eventId,
@@ -161,6 +190,8 @@ namespace Service.Services
                     IsLocked = false,
                 };
                 await budgetItemRepository.AddItem(newItem);
+                // }
+
             }
             return mapper.Map<Event, EventDtoo>(eventEntity);
         }

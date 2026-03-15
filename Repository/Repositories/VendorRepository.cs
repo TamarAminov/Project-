@@ -73,5 +73,49 @@ namespace Repository.Repositories
 
             await _context.save();
         }
+        //    public async Task AddVendorsToEvent(int eventId, List<int> vendorIds)
+        //    {
+        //        var eventEntity = await _context.Events
+        //            .Include(e => e.Vendors)
+        //            .FirstOrDefaultAsync(e => e.EventID == eventId);
+        //        if (eventEntity == null) return;
+
+        //        foreach (var vendorId in vendorIds)
+        //        {
+        //            var vendor = await GetById(vendorId);
+        //            if (vendor != null && !eventEntity.Vendors.Any(v => v.VendorID == vendorId))
+        //                eventEntity.Vendors.Add(vendor);
+        //        }
+        //        await _context.save(); // ✅ קיים כאן
+        //    }
+        public async Task AddVendorsToEvent(int eventId, List<int> vendorIds)
+        {
+            var eventEntity = await _context.Events
+                .Include(e => e.Vendors)
+                .FirstOrDefaultAsync(e => e.EventID == eventId);
+            if (eventEntity == null) return;
+
+            // שליפת הספקים החדשים כדי לדעת את הקטגוריות שלהם
+            var newVendors = await _context.Vendors
+                .Where(v => vendorIds.Contains(v.VendorID))
+                .ToListAsync();
+
+            // קבלת הקטגוריות של הספקים החדשים
+            var categoriesToReplace = newVendors.Select(v => v.CategoryID).ToHashSet();
+
+            // ✅ מחיקה רק של ספקים מאותן קטגוריות
+            var vendorsToRemove = eventEntity.Vendors
+                .Where(v => categoriesToReplace.Contains(v.CategoryID))
+                .ToList();
+
+            foreach (var v in vendorsToRemove)
+                eventEntity.Vendors.Remove(v);
+
+            // הוספת הספקים החדשים
+            foreach (var vendor in newVendors)
+                eventEntity.Vendors.Add(vendor);
+
+            await _context.save();
+        }
     }
 }

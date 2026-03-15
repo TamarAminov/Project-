@@ -11,11 +11,11 @@ namespace Service.Dto.EventDto
         public int EventID { get; set; }
         public string EventName { get; set; }
         public DateTime EventDate { get; set; }
-        public int UserID { get; set; }
-        public UserDto.UserUpdateDto AllUser { get; set; }
+        //public int UserID { get; set; }
+        //public UserDto.UserUpdateDto AllUser { get; set; }
 
-        public string EventTypeID { get; set; }
-        public EventTypeDto.EventTypeDtoo AllEventType { get; set; }
+        //public string EventTypeID { get; set; }
+        //public EventTypeDto.EventTypeDtoo AllEventType { get; set; }
         //public int TotalBudget { get; set; }
         //public int GuestCount { get; set; }
     }

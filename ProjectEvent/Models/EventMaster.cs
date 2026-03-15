@@ -17,7 +17,6 @@ namespace ProjectEvent.Models
 
         public virtual DbSet<BudgetItem> BudgetItems { get; set; }
 
-
         public virtual DbSet<Vendor> Vendors { get; set; }
 
         public virtual DbSet<Tasks> Tasks { get; set; }
@@ -73,8 +72,8 @@ namespace ProjectEvent.Models
         {
 
             //optionsBuilder.UseSqlServer("server=sql;database=EventDB;trusted_connection=true;TrustServerCertificate=True");
-            optionsBuilder.UseSqlServer("server=.\\SQLEXPRESS;database=EventDB;trusted_connection=true;TrustServerCertificate=True");
-            //optionsBuilder.UseSqlServer("server=.;database=EventDB;trusted_connection=true;TrustServerCertificate=True");
+            //optionsBuilder.UseSqlServer("server=.\\SQLEXPRESS;database=EventDB;trusted_connection=true;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("server=.;database=EventDB;trusted_connection=true;TrustServerCertificate=True");
 
 
 

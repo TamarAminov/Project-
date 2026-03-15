@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
 using Repository.Interfaces;
+using Repository.Repositories;
 using Service.Dto.EventDto;
 using Service.Dto.TasksDto;
 using Service.Dto.UserDto;
@@ -18,6 +20,7 @@ namespace Service.Services
     public class VendorService : IVendorService
     {
         private readonly IVendorRepository repository;
+        private readonly IEventRepository eventRepository;
         private readonly IMapper mapper;
         public VendorService(IVendorRepository repository, IMapper mapper)
         {
@@ -81,6 +84,10 @@ namespace Service.Services
             await repository.UpdateItem(id, vendorToUpdate);
             // 3. החזרת הפריט המעודכן ל-Controller
             return mapper.Map<VendorDtoo>(vendorToUpdate);
+        }
+        public async Task AddVendorsToEvent(int eventId, List<int> vendorIds)
+        {
+           await repository.AddVendorsToEvent(eventId, vendorIds);
         }
     }
 }
