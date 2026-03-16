@@ -97,6 +97,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Service.Services
 {
@@ -105,6 +106,8 @@ namespace Service.Services
         private readonly IRepository<Event> repository;
         private readonly IRepository<CategoryBudgetRange> rangeRepository; // חדש
         private readonly IRepository<BudgetItem> budgetItemRepository;
+        private readonly IRepository<Vendor> vendorRepository;
+
         private readonly IMapper mapper;
         public EventService(IRepository<Event> repository, IRepository<CategoryBudgetRange> rangeRepository,
         IRepository<BudgetItem> budgetItemRepository, IMapper mapper)
@@ -116,6 +119,14 @@ namespace Service.Services
         }
         public async Task<EventDtoo> AddItem(EventDtoo item)
         {
+            if (string.IsNullOrWhiteSpace(item.EventName))
+                throw new DomainException("שם אירוע חובה");
+            if (item.TotalBudget < 10000)
+                throw new DomainException("תקציב חייב להיות לפחות 10000");
+            if (item.GuestCount < 30)
+                throw new DomainException("מספר אורחים חייב להיות לפחות 30"); 
+            if (item.EventDate <= DateTime.Today)
+                throw new DomainException("תאריך חייב להיות בעתיד");
             var EventEntity = mapper.Map<Event>(item);
             EventEntity.EventID = 0;
             var i = await repository.AddItem(EventEntity);
@@ -148,61 +159,50 @@ namespace Service.Services
                 eventEntity.TotalBudget >= r.MinBudget &&
                 (r.MaxBudget == 0 || eventEntity.TotalBudget <= r.MaxBudget)
             ).ToList();
-            
-            // 4. יצירת פריטי התקציב ושמירה ב-DB
-            foreach (var rule in relevantRules)
-            {
-                //var basePlanned = (int)(eventEntity.TotalBudget * (rule.Percentage / 100));
 
-                //var newItem = new BudgetItem
-                //{
-                //    EventID = eventId,
-                //    CategoryID = rule.CategoryID,
-                //    PlannedAmount = rule.CategoryID == 3
-                //    ? (int)(rule.Percentage * eventEntity.GuestCount)  // ✅ מחיר מנה * אורחים
-                //    : (int)(eventEntity.TotalBudget * (rule.Percentage / 100)),  // ✅ אחוז מהתקציב
-                //    ActualAmount = 0,
-                //    IsIgnore = false,
-                //    IsLocked = false,
-                //};
-                ////if (rule.CategoryID == 3)
-                ////{
-                //    var newItem = new BudgetItem
-                //    {
-                //        EventID = eventId,
-                //        CategoryID = rule.CategoryID,
-                //        PlannedAmount = (int)(eventEntity.TotalBudget * (rule.Percentage / 100)*eventEntity.GuestCount),
-                //        ActualAmount = 0,
-                //        IsIgnore = false,
-                //        IsLocked = false,
-                //    };
-                //    await budgetItemRepository.AddItem(newItem);
-                //}
-                //else
-                //{
-                var newItem = new BudgetItem
+            // 4. יצירת פריטי התקציב ושמירה ב-DB
+            //foreach (var rule in relevantRules)
+            //{
+            //    var newItem = new BudgetItem
+            //    {
+            //        EventID = eventId,
+            //        CategoryID = rule.CategoryID,
+            //        PlannedAmount = (int)(eventEntity.TotalBudget * (rule.Percentage / 100)),
+            //        ActualAmount = 0,
+            //        IsIgnore = false,
+            //        IsLocked = false,
+            //    };
+            //    await budgetItemRepository.AddItem(newItem);
+
+            //}
+
+            int totalAllocated = 0;
+
+            for (int i = 0; i < relevantRules.Count; i++)
+            {
+                var rule = relevantRules[i];
+                int amount = (i == relevantRules.Count - 1)
+                    ? (int)eventEntity.TotalBudget - totalAllocated
+                    : (int)(eventEntity.TotalBudget * (rule.Percentage /(double) 100));
+                Console.WriteLine($"rule {i}: CategoryID={rule.CategoryID}, Percentage={rule.Percentage}, amount={amount}, totalAllocated={totalAllocated}");
+
+                totalAllocated += amount;
+
+                await budgetItemRepository.AddItem(new BudgetItem
                 {
                     EventID = eventId,
                     CategoryID = rule.CategoryID,
-                    PlannedAmount = (int)(eventEntity.TotalBudget * (rule.Percentage / 100)),
+                    PlannedAmount = amount,
                     ActualAmount = 0,
                     IsIgnore = false,
                     IsLocked = false,
-                };
-                await budgetItemRepository.AddItem(newItem);
-                // }
-
+                });
             }
             return mapper.Map<Event, EventDtoo>(eventEntity);
         }
 
         public async Task<List<EventDtoo>> GetAll(int id)
         {
-            //if (user.Role == User.EnumRole.Manager)
-            //{
-            //    var events1 = await repository.GetAll();
-            //    return mapper.Map<List<Event>, List<EventDtoo>>(events1);
-            //}
             var events = await repository.GetAll(id);
             return mapper.Map<List<Event>, List<EventDtoo>>(events);
         }
@@ -221,7 +221,27 @@ namespace Service.Services
         {
             // 1. בדיקה אם הפריט קיים ב-DB לפני העדכון
             var existingItem = await repository.GetById(id);
-            if (existingItem == null) return null;
+            //if (existingItem == null) return null;
+            if (existingItem == null)
+                throw new DomainException("אירוע לא נמצא");
+            if (item.EventDate != existingItem.EventDate)
+            {
+                foreach(var vendor in item.Vendors)
+                    await vendorRepository.DeleteItem(vendor.VendorID);
+                foreach (var b in item.budgetItems)
+                    await budgetItemRepository.DeleteItem(b.BudgetItemID);
+                DevideBudgetsDefualt(id);
+            }
+            // ולידציה לפני עדכון
+            if (string.IsNullOrWhiteSpace(item.EventName))
+                throw new DomainException("שם אירוע חובה");
+            if (item.TotalBudget < 10000)
+                throw new DomainException("תקציב חייב להיות לפחות 10000");
+            if (item.GuestCount < 30)
+                throw new DomainException("מספר אורחים חייב להיות לפחות 30");
+            if (item.EventDate <= DateTime.Today)
+                throw new DomainException("תאריך חייב להיות בעתיד");
+
             var eventToUpdate = mapper.Map<EventDtoo, Event>(item);
             eventToUpdate.EventID = id;
             await repository.UpdateItem(id, eventToUpdate);

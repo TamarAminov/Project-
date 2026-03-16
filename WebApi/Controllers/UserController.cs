@@ -42,6 +42,8 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDtoo>> Post([FromBody] UserRegisterDto userDto)
         {
+            try
+            {
             if (userDto == null)
             {
                 return BadRequest("Invalid user data.");
@@ -51,47 +53,76 @@ namespace WebApi.Controllers
 
             // מחזיר קוד 201 (Created) עם קישור לשליפת האובייקט שנוצר
             return CreatedAtAction(nameof(GetById), new { id = newUser.UserID }, newUser);
+            }
+            catch (DomainException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
         }
 
         // 4. עדכון משתמש קיים
         [HttpPut("{id}")]
         public async Task<ActionResult<UserDtoo>> Put(int id, [FromBody] UserDtoo userDto)
         {
-            var userUpdate = new UserUpdateDto
+            try
             {
-                UserID = id,
-                UserEmail = userDto.UserEmail,
-                UserName = userDto.UserName,
-                UserPhone = userDto.UserPhone,
-            };
-            var result = await service.Update(id, userUpdate);
-            if (result== null) return NotFound();
-            return Ok(result);// קוד 204 - הצלחתי לעדכן ואין לי מה להחזיר
+                    var userUpdate = new UserUpdateDto
+                    {
+                        UserID = id,
+                        UserEmail = userDto.UserEmail,
+                        UserName = userDto.UserName,
+                        UserPhone = userDto.UserPhone,
+                    };
+                    var result = await service.Update(id, userUpdate);
+                    if (result== null) return NotFound();
+                    return Ok(result);// קוד 204 - הצלחתי לעדכן ואין לי מה להחזיר
+            }
+            catch (DomainException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
         }
 
 
         [HttpPut("change-password/{id}")]
         public async Task<ActionResult<UserDtoo>> Put(int id, [FromBody] UserChangePasswordDto user)
         {
-            var newUser = new UserChangePasswordDto
+            try
             {
-                UserID = id,
-                UserPassword = user.UserPassword,
-                UserPasswordNew = user.UserPasswordNew
-            };
-            var result = await service.ChangePassword(newUser);
-            if (result == null) return NotFound();
-            return Ok(result);// קוד 204 - הצלחתי לעדכן ואין לי מה להחזיר
+                        var newUser = new UserChangePasswordDto
+                        {
+                            UserID = id,
+                            UserPassword = user.UserPassword,
+                            UserPasswordNew = user.UserPasswordNew
+                        };
+                        var result = await service.ChangePassword(newUser);
+                        if (result == null) return NotFound();
+                        return Ok(result);// קוד 204 - הצלחתי לעדכן ואין לי מה להחזיר
+            }
+            catch (DomainException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
         }
         [HttpPost("login")]
         public async Task<ActionResult<UserDtoo>> Login([FromBody] UserLoginDto user)
         {
+            try
+            {
+                        var resultUser = await service.Login(user);
+                        if (resultUser == null)
+                            return NotFound("User not found or incorrect password.");
+                        //return Ok(resultUser);
+                        return Ok(new { token = service.GenerateToken(resultUser), user = resultUser });
 
-            var resultUser = await service.Login(user);
-            if (resultUser == null)
-                return NotFound("User not found or incorrect password.");
-            //return Ok(resultUser);
-            return Ok(new { token = service.GenerateToken(resultUser), user = resultUser });
+            }
+            catch (DomainException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
       
     }

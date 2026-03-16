@@ -29,6 +29,15 @@ namespace Service.Services
         }
         public async Task<VendorDtoo> AddItem(VendorDtoo item)
         {
+            // ✅ חדש
+            if (string.IsNullOrWhiteSpace(item.BusinessName))
+                throw new DomainException("שם עסק חובה");
+            if (item.CategoryID <= 0)
+                throw new DomainException("קטגוריה חובה");
+            if (item.AreaId <= 0)
+                throw new DomainException("אזור חובה");
+            if (item.BasePrice <= 0)
+                throw new DomainException("מחיר חייב להיות חיובי");
             var vendor = mapper.Map<VendorDtoo, Vendor>(item);
             vendor.Attributes = null;
            // vendor.VendorID = 0;
@@ -76,9 +85,17 @@ namespace Service.Services
         {
             // 1. בדיקה אם הפריט קיים ב-DB לפני העדכון
             var existingItem = await repository.GetById(id);
-            if (existingItem == null) return null;
-
-           
+            // ✅ חדש
+            if (existingItem == null)
+                throw new DomainException("ספק לא נמצא");
+            if (string.IsNullOrWhiteSpace(item.BusinessName))
+                throw new DomainException("שם עסק חובה");
+            if (item.CategoryID <= 0)
+                throw new DomainException("קטגוריה חובה");
+            if (item.AreaId <= 0)
+                throw new DomainException("אזור חובה");
+            if (item.BasePrice <= 0)
+                throw new DomainException("מחיר חייב להיות חיובי");
             var vendorToUpdate = mapper.Map<VendorDtoo, Vendor>(item);
             vendorToUpdate.VendorID = id;
             await repository.UpdateItem(id, vendorToUpdate);
@@ -87,7 +104,12 @@ namespace Service.Services
         }
         public async Task AddVendorsToEvent(int eventId, List<int> vendorIds)
         {
-           await repository.AddVendorsToEvent(eventId, vendorIds);
+            // ✅ חדש
+            if (eventId <= 0)
+                throw new DomainException("אירוע לא תקין");
+            if (vendorIds == null || !vendorIds.Any())
+                throw new DomainException("יש לבחור לפחות ספק אחד");
+            await repository.AddVendorsToEvent(eventId, vendorIds);
         }
     }
 }

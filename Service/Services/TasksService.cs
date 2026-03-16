@@ -25,6 +25,15 @@ namespace Service.Services
 
         public async Task< TasksDtoo> AddItem(TasksDtoo item)
         {
+            // ✅ חדש
+            if (string.IsNullOrWhiteSpace(item.Description))
+                throw new DomainException("תיאור משימה חובה");
+            if (item.DueDate <= DateOnly.FromDateTime(DateTime.Today))
+                throw new DomainException("תאריך יעד חייב להיות בעתיד");
+            if (item.VendorID <= 0)
+                throw new DomainException("ספק לא תקין");
+            if (item.EventID <= 0)
+                throw new DomainException("אירוע לא תקין");
             var tasks=mapper.Map<Tasks>(item);
             tasks.TaskID = 0;
             var i = await repository.AddItem(tasks);
@@ -61,11 +70,21 @@ namespace Service.Services
 
         public async Task<TasksDtoo> UpdateItem(int id, TasksDtoo item)
         {
+            
             // 1. בדיקה אם הפריט קיים ב-DB לפני העדכון
             var existingItem = await repository.GetById(id);
-            if (existingItem == null) return null;
+            // ✅ חדש
+            if (existingItem == null)
+                throw new DomainException("משימה לא נמצאה");
+            if (string.IsNullOrWhiteSpace(item.Description))
+                throw new DomainException("תיאור משימה חובה");
+            if (item.DueDate <= DateOnly.FromDateTime(DateTime.Today))
+                throw new DomainException("תאריך יעד חייב להיות בעתיד");
+            if (item.VendorID <= 0)
+                throw new DomainException("ספק לא תקין");
+            if (item.EventID <= 0)
+                throw new DomainException("אירוע לא תקין");
 
-            
             var tasksToUpdate = mapper.Map<TasksDtoo, Tasks>(item);
             tasksToUpdate.TaskID = id;
 

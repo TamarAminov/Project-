@@ -95,5 +95,9 @@ namespace Repository.Repositories
             }
             await _context.save();
         }
+        public async Task<User?> GetByEmail(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserEmail == email);
+        }
     }
 }
