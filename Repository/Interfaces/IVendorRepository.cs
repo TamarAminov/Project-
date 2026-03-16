@@ -11,5 +11,7 @@ namespace Repository.Interfaces
     {
         public Task<int> GetMinPriceOfVendorByCategory(int categoryId);
         public Task<int> GetMaxPriceOfVendorByCategory(int categoryId);
+        public Task AddVendorsToEvent(int eventId, List<int> vendorIds);
+
     }
 }

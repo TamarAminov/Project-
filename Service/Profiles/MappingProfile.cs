@@ -57,6 +57,7 @@ namespace Service.Profiles
             CreateMap<Category, CategoryDtoo>();
             CreateMap<CategoryDtoo, Category>();
 
+            CreateMap<Event, EventVendorDto>();
 
 
 
