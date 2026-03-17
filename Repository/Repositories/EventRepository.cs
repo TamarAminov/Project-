@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 namespace Repository.Repositories
 {
     public class EventRepository : IEventRepository
@@ -63,12 +64,12 @@ namespace Repository.Repositories
             event1.EventName = item.EventName;
             event1.EventTypeID = item.EventTypeID;
             event1.UserID = item.UserID;
-            event1.AllUser = item.AllUser;
             event1.GuestCount = item.GuestCount;
             event1.TotalBudget = item.TotalBudget;
-            event1.Vendors = item.Vendors;
-            event1.BudgetItems= item.BudgetItems;
-            event1.Tasks= item.Tasks;
+            //event1.Vendors = item.Vendors;
+            //event1.BudgetItems= item.BudgetItems;
+            //event1.Tasks= item.Tasks;
+
             _context.Events.Update(event1);
 
             await _context.save();
