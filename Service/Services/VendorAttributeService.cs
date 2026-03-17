@@ -5,6 +5,7 @@ using Service.Dto.EventDto;
 using Service.Dto.TasksDto;
 using Service.Dto.UserDto;
 using Service.Dto.VendorAttributeDto;
+using Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,11 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Service.Services
 {
-    public class VendorAttributeService : IService<VendorAttributeDtoo>
+    public class VendorAttributeService : IVendorAttributeService
     {
-        private readonly IRepository<VendorAttribute> repository;
+        private readonly IVendorAttributeRepository repository;
         private readonly IMapper mapper;
-        public VendorAttributeService(IRepository<VendorAttribute> repository, IMapper mapper)
+        public VendorAttributeService(IVendorAttributeRepository repository, IMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;
@@ -46,13 +47,7 @@ namespace Service.Services
         }
 
         public async Task<List<VendorAttributeDtoo>> GetAll(int id)
-        {
-
-            //if (user.Role == User.EnumRole.Manager)
-            //{
-            //    var vendorAttributes =await repository.GetAll();
-            //    return mapper.Map<List<VendorAttribute>, List<VendorAttributeDtoo>>(vendorAttributes);
-            //}
+        {   
             var item= await repository.GetAll(id);
             return mapper.Map<List<VendorAttribute>, List<VendorAttributeDtoo>>(item);
         }
@@ -67,6 +62,22 @@ namespace Service.Services
             return mapper.Map<VendorAttribute, VendorAttributeDtoo>(vendorAttribute);
         }
 
+        public async Task<Dictionary<int, List<VendorAttributeDtoo>>> GetByVendorIdsAsync(List<int> vendorIds)
+        {
+            var attrs = await repository.GetByVendorIdsAsync(vendorIds);
+            return attrs
+                .GroupBy(a => a.VendorID)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(a => new VendorAttributeDtoo
+                    {
+                        VendorAttributeID = a.VendorAttributeID,
+                        VendorAttributeName = a.VendorAttributeName,
+                        Value = a.Value,
+                        VendorId = a.VendorID
+                    }).ToList()
+                );
+        }
         public async Task<VendorAttributeDtoo> UpdateItem(int id, VendorAttributeDtoo item)
         {
 
@@ -89,5 +100,6 @@ namespace Service.Services
             // 3. החזרת הפריט המעודכן ל-Controller
             return mapper.Map<VendorAttributeDtoo>(vendorAttributeToUpdate);
         }
+       
     }
 }

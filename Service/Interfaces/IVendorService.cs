@@ -1,4 +1,5 @@
-﻿using Service.Dto.VendorDto;
+﻿using Service.Dto.VendorAttributeDto;
+using Service.Dto.VendorDto;
 using Service.Services;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,7 @@ namespace Service.Interfaces
         public Task<int> GetMinPriceOfVendorByCategory(int categoryId);
         public Task<int> GetMaxPriceOfVendorByCategory(int categoryId);
         public Task AddVendorsToEvent(int eventId, List<int> vendorIds);
+        //public Task<Dictionary<int, List<VendorAttributeDtoo>>> GetByVendorIdsAsync(List<int> vendorIds);
+
     }
 }

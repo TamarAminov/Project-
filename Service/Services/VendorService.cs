@@ -6,6 +6,7 @@ using Repository.Repositories;
 using Service.Dto.EventDto;
 using Service.Dto.TasksDto;
 using Service.Dto.UserDto;
+using Service.Dto.VendorAttributeDto;
 using Service.Dto.VendorDto;
 using Service.Interfaces;
 using System;
@@ -111,5 +112,21 @@ namespace Service.Services
                 throw new DomainException("יש לבחור לפחות ספק אחד");
             await repository.AddVendorsToEvent(eventId, vendorIds);
         }
+        //public async Task<Dictionary<int, List<VendorAttributeDtoo>>> GetByVendorIdsAsync(List<int> vendorIds)
+        //{
+        //    var attrs = await repository.GetByVendorIdsAsync(vendorIds);
+        //    return attrs
+        //        .GroupBy(a => a.VendorID)
+        //        .ToDictionary(
+        //            g => g.Key,
+        //            g => g.Select(a => new VendorAttributeDtoo
+        //            {
+        //                VendorAttributeID = a.VendorAttributeID,
+        //                VendorAttributeName = a.VendorAttributeName,
+        //                Value = a.Value,
+        //                VendorId = a.VendorID
+        //            }).ToList()
+        //        );
+        //}
     }
 }
