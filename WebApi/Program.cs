@@ -67,10 +67,12 @@ builder.Services.AddScoped<IVendorRepository, VendorRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IVendorAttributeRepository, VendorAttributeRepository>();
 builder.Services.AddScoped<IService<VendorAttributeDtoo>, VendorAttributeService>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 //builder.Services.AddScoped<IService<VendorDtoo>, VendorService>();
 builder.Services.AddScoped<IService<VendorAttributeDtoo>, VendorAttributeService>();
 //builder.Services.AddScoped<IService<EventDtoo>, EventService>();
 builder.Services.AddScoped<IService<TasksDtoo>, TasksService>();
+
 builder.Services.AddScoped<IService<BudgetItemDtoo>, BudgetItemService>();
 //builder.Services.AddScoped<IGetService<EventTypeDtoo>, EventTypeService>();
 //// ?? ?? ?? IUserService ???? ???? ?-User:
@@ -85,6 +87,8 @@ builder.Services.AddScoped<IBudgetItemService, BudgetItemService>();
 builder.Services.AddScoped<IEventService, EventService>();
 // Program.cs
 builder.Services.AddScoped<IService<EventDtoo>, EventService>();
+builder.Services.AddScoped<IService<TasksDtoo>, TasksService>();
+builder.Services.AddScoped<ITasksService, TasksService>();
 
 // Generic IService<T>
 //builder.Services.AddScoped<IService<VendorAttributeDto>, VendorAttributeService>();

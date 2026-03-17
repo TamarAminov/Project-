@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Repository.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace Repository.Interfaces
         public DbSet<EventType> EventType { get; }
         public DbSet<Category> Category { get; }
         public DbSet<CategoryBudgetRange> CategoryBudgetRanges { get; }
-       
+        DatabaseFacade Database { get; }
 
 
         Task<int> save();

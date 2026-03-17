@@ -44,23 +44,45 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Dto.TasksDto;
 using Service.Dto.UserDto;
+using Service.Interfaces;
 using Service.Services;
+using Service.Dto.TasksDto;
 
 [Route("api/[controller]")]
 [ApiController]
 public class TasksController : ControllerBase
 {
-    private readonly IService<TasksDtoo> _tasksService;
+    private readonly ITasksService _tasksService;
 
-    public TasksController(IService<TasksDtoo> tasksService)
+    public TasksController(ITasksService tasksService)
     {
         _tasksService = tasksService;
     }
-
-    [HttpGet]
-    public async Task<ActionResult<List<TasksDtoo>>> Get(int id)
+    // POST /api/tasks/generate  ← קריאה לפרוצדורה ליצירת משימות לספק
+    [HttpPost("generate", Name = "GenerateTasks")]
+    public async Task<ActionResult> GenerateTasks([FromBody] GenerateTasksDto dto)
     {
-        var tasks = await _tasksService.GetAll(id);
+        try
+        {
+
+
+            await _tasksService.GenerateTasksForVendor(dto.EventID, dto.VendorID);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message,
+                inner = ex.InnerException?.Message
+            });
+        }
+    }
+
+        [HttpGet]
+    public async Task<ActionResult<List<TasksDtoo>>> Get(int eventId)
+    {
+        var tasks = await _tasksService.GetAll(eventId);
         return Ok(tasks);
     }
 
@@ -111,4 +133,15 @@ public class TasksController : ControllerBase
         await _tasksService.DeleteItem(id);
         return NoContent();
     }
+
+    // PATCH /api/tasks/{id}/toggle  ← סימון משימה
+    [HttpPatch("{id}/toggle")]
+    public async Task<ActionResult> ToggleTask(int id, [FromBody] ToggleTaskDto dto)
+    {
+        var result = await _tasksService.ToggleTask(id, dto.IsCompleted);
+        if (result == null) return NotFound();
+        return Ok(result);
+    }
+
+
 }
