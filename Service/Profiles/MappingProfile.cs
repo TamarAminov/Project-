@@ -59,7 +59,8 @@ namespace Service.Profiles
 
             CreateMap<Event, EventVendorDto>();
 
-
+            CreateMap<VendorAttribute, VendorAttributeDtoo>();
+            CreateMap<VendorAttributeDtoo,VendorAttribute> ();
 
 
         }

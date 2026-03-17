@@ -10,9 +10,10 @@ namespace WebApi.Controllers
     [ApiController]
     public class VendorAttributeController : ControllerBase
     {
-        private readonly Service.Services.IService<VendorAttributeDtoo> _attributeService;
+        //private readonly Service.Services.VendorAttributeService _attributeService;
+        private readonly IVendorAttributeService _attributeService;
 
-        public VendorAttributeController(Service.Services.IService<VendorAttributeDtoo> attributeService)
+        public VendorAttributeController(IVendorAttributeService attributeService)
         {
             _attributeService = attributeService;
         }
@@ -93,6 +94,12 @@ namespace WebApi.Controllers
 
             await _attributeService.DeleteItem(id);
             return NoContent(); // 204 Success
+        }
+        [HttpPost("bulk")]
+        public async Task<IActionResult> GetBulkAttributes([FromBody] List<int> vendorIds)
+        {
+            var result = await _attributeService.GetByVendorIdsAsync(vendorIds);
+            return Ok(result);
         }
     }
 }

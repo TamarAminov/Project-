@@ -52,10 +52,12 @@ using Service.Services;
 public class VendorController : ControllerBase
 {
     private readonly IVendorService _vendorService;
+    private readonly IVendorAttributeService _attributeService;
 
-    public VendorController(IVendorService vendorService)
+    public VendorController(IVendorService vendorService, IVendorAttributeService attributeService)
     {
         _vendorService = vendorService;
+        _attributeService = attributeService;
     }
 
     [HttpGet]
@@ -128,5 +130,13 @@ public class VendorController : ControllerBase
     {
         await _vendorService.AddVendorsToEvent(eventId, vendorIds);
         return Ok();
+    }
+
+    // VendorAttributeController
+    [HttpPost("bulk")]
+    public async Task<IActionResult> GetBulkAttributes([FromBody] List<int> vendorIds)
+    {
+        var result = await _attributeService.GetByVendorIdsAsync(vendorIds);
+        return Ok(result);
     }
 }
