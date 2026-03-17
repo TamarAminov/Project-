@@ -19,7 +19,7 @@ namespace Repository.Entities
         public string Description { get; set; }
         public bool IsCompleted { get; set; }
         public DateOnly DueDate { get; set; }
-        public int VendorID { get; set; }
+        public int? VendorID { get; set; }
         [ForeignKey("VendorID")]
         public virtual Vendor Vendor { get; set; }
     }

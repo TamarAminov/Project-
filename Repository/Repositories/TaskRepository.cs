@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
 using Repository.Interfaces;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class TaskRepository : IRepository<Tasks>
+    public class TaskRepository : ITaskRepository
     {
         private readonly IContext _context;
         public TaskRepository(IContext context)
@@ -37,7 +38,11 @@ namespace Repository.Repositories
 
         public async Task<List<Tasks>> GetAll(int id)
         {
-            return _context.Tasks.Where(x => x.AllEvent.AllUser.UserID == id).ToList();
+            //return _context.Tasks.Where(x => x.AllEvent.AllUser.UserID == id).ToList();
+        return await _context.Tasks
+                 .Include(t => t.Vendor)
+        .Where(x => x.EventID == id)  // ← לפי EventID ישירות, לא דרך User
+        .ToListAsync();               // ← async!
         }
 
         public async Task<Tasks> GetById(int id)
@@ -59,6 +64,15 @@ namespace Repository.Repositories
             _context.Tasks.Update(tasks);
 
             await _context.save();
+        }
+        public async Task GenerateTasksForVendor(int eventId, int? vendorId, DateTime eventDate)
+        {
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC InsertTasksForVendor @EventID, @VendorID, @EventDate",
+                new SqlParameter("@EventID", eventId),
+                new SqlParameter("@VendorID", vendorId),
+                new SqlParameter("@EventDate", eventDate)
+            );
         }
     }
 }

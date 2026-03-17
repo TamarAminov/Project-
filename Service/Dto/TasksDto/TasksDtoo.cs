@@ -14,10 +14,12 @@ namespace Service.Dto.TasksDto
         public string Description { get; set; }
         public bool IsCompleted { get; set; }
         public DateOnly DueDate { get; set; }
-        public int VendorID { get; set; }
+        public int? VendorID { get; set; }
         public VendorDto.VendorDtoo? AllVendor { get; set; }
         public int  EventID { get; set; }
         //public  EventDto.EventDtoo AllEvent { get; set; }
-
+       
     }
+    public record GenerateTasksDto(int EventID, int VendorID);
+    public record ToggleTaskDto(bool IsCompleted);
 }
