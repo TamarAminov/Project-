@@ -224,7 +224,7 @@ namespace Service.Services
             //if (existingItem == null) return null;
             if (existingItem == null)
                 throw new DomainException("אירוע לא נמצא");
-            if (item.EventDate != existingItem.EventDate)
+            if (item.EventDate.Date != existingItem.EventDate.Date)
             {
                 foreach(var vendor in item.Vendors)
                     await vendorRepository.DeleteItem(vendor.VendorID);

@@ -65,6 +65,8 @@ builder.Services.AddScoped<IRepository<CategoryBudgetRange>, CategoryBudgetRange
 builder.Services.AddScoped<ICategoryBudgetRangeRepository, CategoryBudgetRangeRepository>();
 builder.Services.AddScoped<IVendorRepository, VendorRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IVendorAttributeRepository, VendorAttributeRepository>();
+builder.Services.AddScoped<IService<VendorAttributeDtoo>, VendorAttributeService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 //builder.Services.AddScoped<IService<VendorDtoo>, VendorService>();
 builder.Services.AddScoped<IService<VendorAttributeDtoo>, VendorAttributeService>();
@@ -76,6 +78,8 @@ builder.Services.AddScoped<IService<BudgetItemDtoo>, BudgetItemService>();
 //// ?? ?? ?? IUserService ???? ???? ?-User:
 //builder.Services.AddScoped<IUserService, UserService>();
 ////builder.Services.AddScoped<IRepository, UserRepository>();
+builder.Services.AddScoped<IVendorAttributeService, VendorAttributeService>();
+builder.Services.AddScoped<IVendorAttributeRepository, VendorAttributeRepository>();
 builder.Services.AddScoped<IService<CategoryBudgetRangeDtoo>,CategoryBudgetRangeService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVendorService, VendorService>();

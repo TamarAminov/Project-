@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class VendorAttributeRepository : IRepository<VendorAttribute>
+    public class VendorAttributeRepository : IVendorAttributeRepository
     {
         private readonly IContext _context;
         public VendorAttributeRepository(IContext context)
@@ -44,6 +44,13 @@ namespace Repository.Repositories
         {
             return  await _context.VendorAttributes.FirstOrDefaultAsync(x => x.VendorAttributeID == id);
 
+        }
+
+        public async Task<List<VendorAttribute>> GetByVendorIdsAsync(List<int> vendorIds)
+        {
+            return await _context.VendorAttributes
+                .Where(a => vendorIds.Contains(a.VendorID))
+                .ToListAsync();
         }
 
         public async Task UpdateItem(int id, VendorAttribute item)
