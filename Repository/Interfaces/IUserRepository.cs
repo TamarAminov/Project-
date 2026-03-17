@@ -18,5 +18,6 @@ namespace Repository.Interfaces
         Task<List<User>> GetAll(int id);
         Task<User> GetById(int id);
         Task UpdateItem(int id, User item);
+        Task<User?> GetByEmail(string email);
     }
 }

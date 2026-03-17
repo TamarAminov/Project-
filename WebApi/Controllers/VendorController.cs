@@ -67,24 +67,48 @@ public class VendorController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<VendorDtoo>> GetById(int id)
     {
-        var vendor = await _vendorService.GetById(id);
-        if (vendor == null) return NotFound();
-        return Ok(vendor);
+        try
+        {
+            var vendor = await _vendorService.GetById(id);
+            if (vendor == null) return NotFound();
+            return Ok(vendor);
+        }
+        catch (DomainException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+
     }
 
     [HttpPost]
     public async Task<ActionResult<VendorDtoo>> Post([FromBody] VendorDtoo vendorDto)
     {
+        try
+        {
         var created = await _vendorService.AddItem(vendorDto);
         return CreatedAtAction(nameof(GetById), new { id = created.VendorID }, created);
+
+        }
+        catch (DomainException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<VendorDtoo>> Put(int id, [FromBody] VendorDtoo vendorDto)
     {
+        try
+        {
         var updated = await _vendorService.UpdateItem(id, vendorDto);
         if (updated == null) return NotFound();
         return Ok(updated);
+        }
+        catch (DomainException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+
     }
 
     [HttpGet("minPrice/{categoryId}")]

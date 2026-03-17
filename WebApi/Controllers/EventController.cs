@@ -39,30 +39,43 @@ public class EventController : ControllerBase
     public async Task<ActionResult<EventDtoo>> Post([FromBody] EventCreateDto eventDto)
     {
         if (eventDto == null) return BadRequest("Invalid event data.");
-
-        var newEventDtoo = new EventDtoo
+        try
         {
-            EventID = 0,
-            EventName = eventDto.EventName,
-            EventDate = eventDto.EventDate,
-            UserID = eventDto.UserID,
-            EventTypeID = eventDto.EventTypeID,
-            TotalBudget = eventDto.TotalBudget,
-            GuestCount = eventDto.GuestCount
-        };
+            var newEventDtoo = new EventDtoo
+            {
+                EventID = 0,
+                EventName = eventDto.EventName,
+                EventDate = eventDto.EventDate,
+                UserID = eventDto.UserID,
+                EventTypeID = eventDto.EventTypeID,
+                TotalBudget = eventDto.TotalBudget,
+                GuestCount = eventDto.GuestCount
+            };
 
-        var newEvent = await _eventService.AddItem(newEventDtoo);
-        return CreatedAtAction(nameof(GetById), new { id = newEvent.EventID }, newEvent);
+            var newEvent = await _eventService.AddItem(newEventDtoo);
+            return CreatedAtAction(nameof(GetById), new { id = newEvent.EventID }, newEvent);
+        }
+        catch (DomainException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<EventDtoo>> Put(int id, [FromBody] EventDtoo eventDto)
     {
-        var updatedEvent = await _eventService.UpdateItem(id, eventDto);
-        if (updatedEvent == null)
-            return NotFound($"Event with ID {id} not found for update.");
-
-        return Ok(updatedEvent);
+        try
+        {
+            var updatedEvent = await _eventService.UpdateItem(id, eventDto);
+            if (updatedEvent == null)
+                return NotFound($"Event with ID {id} not found for update.");
+            return Ok(updatedEvent);
+        }
+        catch (DomainException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]

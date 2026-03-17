@@ -75,19 +75,34 @@ public class TasksController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TasksDtoo>> Post([FromBody] TasksDtoo taskDto)
     {
-        if (taskDto == null) return BadRequest();
+        try
+        {
+            if (taskDto == null) return BadRequest();
 
         var newTask = await _tasksService.AddItem(taskDto);
         return CreatedAtAction(nameof(GetById), new { id = newTask.TaskID }, newTask);
+    
+        }
+        catch (DomainException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<TasksDtoo>> Put(int id, [FromBody] TasksDtoo taskDto)
     {
+        try
+        {
         var result = await _tasksService.UpdateItem(id, taskDto);
         if (result == null) return NotFound();
 
         return Ok(result);
+        }
+        catch (DomainException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]

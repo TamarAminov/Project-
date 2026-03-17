@@ -41,31 +41,47 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<VendorAttributeDtoo>> Post([FromBody] VendorAttributeDtoo attributeDto)
         {
-            if (attributeDto == null)
+            try
             {
-                return BadRequest("Invalid attribute data.");
+            if (attributeDto == null)
+                        {
+                            return BadRequest("Invalid attribute data.");
+                        }
+
+                        var newAttribute = await _attributeService.AddItem(attributeDto);
+
+                        // מחזיר 201 עם נתיב לשליפה
+                        return CreatedAtAction(nameof(GetById), new { id = newAttribute.VendorAttributeID }, newAttribute);
+      
             }
-
-            var newAttribute = await _attributeService.AddItem(attributeDto);
-
-            // מחזיר 201 עם נתיב לשליפה
-            return CreatedAtAction(nameof(GetById), new { id = newAttribute.VendorAttributeID }, newAttribute);
+            catch (DomainException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // 4. עדכון מאפיין קיים
         [HttpPut("{id}")]
         public async Task<ActionResult<VendorAttributeDtoo>> Put(int id, [FromBody] VendorAttributeDtoo attributeDto)
         {
-            if (attributeDto == null) return BadRequest();
-
-            var result = await _attributeService.UpdateItem(id, attributeDto);
-
-            if (result == null)
+            try
             {
-                return NotFound($"Vendor Attribute with ID {id} not found for update.");
-            }
+                    if (attributeDto == null) return BadRequest();
 
-            return Ok(result); // מחזיר את האובייקט המעודכן כפי שביקשת
+                    var result = await _attributeService.UpdateItem(id, attributeDto);
+
+                    if (result == null)
+                    {
+                        return NotFound($"Vendor Attribute with ID {id} not found for update.");
+                    }
+
+                    return Ok(result); // מחזיר את האובייקט המעודכן כפי שביקשת
+
+            }
+            catch (DomainException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // 5. מחיקת מאפיין

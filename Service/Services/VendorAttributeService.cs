@@ -25,17 +25,20 @@ namespace Service.Services
         }
         public async Task<VendorAttributeDtoo> AddItem(VendorAttributeDtoo item)
         {
-            var entity = mapper.Map<VendorAttribute>(item);
+            // ✅ חדש
+            if (string.IsNullOrWhiteSpace(item.VendorAttributeName))
+                throw new DomainException("שם מאפיין חובה");
+            if (string.IsNullOrWhiteSpace(item.Value))
+                throw new DomainException("ערך מאפיין חובה");
+            if (item.VendorId <= 0)
+                throw new DomainException("ספק לא תקין");
 
-            // זה השלב הקריטי: מאפסים את ה-ID ל-0
-            // כך SQL Server ידע לייצר מספר חדש בעצמו
+            var entity = mapper.Map<VendorAttribute>(item);
             entity.VendorAttributeID = 0;
 
             var result = await repository.AddItem(entity);
             return mapper.Map<VendorAttributeDtoo>(result);
-            //var i = await repository.AddItem(mapper.Map<VendorAttributeDtoo, VendorAttribute>(item));
-            //return mapper.Map<VendorAttribute,VendorAttributeDtoo>(i);
-        }
+            }
 
         public async Task DeleteItem(int id)
         {
@@ -66,11 +69,19 @@ namespace Service.Services
 
         public async Task<VendorAttributeDtoo> UpdateItem(int id, VendorAttributeDtoo item)
         {
+
             // 1. בדיקה אם הפריט קיים ב-DB לפני העדכון
             var existingItem = await repository.GetById(id);
-            if (existingItem == null) return null;
+            // ✅ חדש
+            if (existingItem == null)
+                throw new DomainException("מאפיין לא נמצא");
+            if (string.IsNullOrWhiteSpace(item.VendorAttributeName))
+                throw new DomainException("שם מאפיין חובה");
+            if (string.IsNullOrWhiteSpace(item.Value))
+                throw new DomainException("ערך מאפיין חובה");
+            if (item.VendorId <= 0)
+                throw new DomainException("ספק לא תקין");
 
-            
             var vendorAttributeToUpdate = mapper.Map<VendorAttributeDtoo, VendorAttribute>(item);
             vendorAttributeToUpdate.VendorAttributeID = id;
 

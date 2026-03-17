@@ -39,15 +39,40 @@ namespace Service.Services
 
         public async Task<UserDtoo> Login(UserLoginDto user)
         {
-            //var pass = HashPassword(user.UserPassword);
-            //Console.WriteLine(pass);
-            var currentUser = await repository.Login(user.UserEmail, user.UserPassword); 
+            // ✅ חדש
+            if (string.IsNullOrWhiteSpace(user.UserEmail))
+                throw new DomainException("אימייל חובה");
+            if (!user.UserEmail.Contains("@"))
+                throw new DomainException("אימייל לא תקין");
+            if (string.IsNullOrWhiteSpace(user.UserPassword))
+                throw new DomainException("סיסמה חובה");
+            var currentUser = await repository.Login(user.UserEmail, user.UserPassword);
+            // ✅ חדש
+            if (currentUser == null)
+                throw new DomainException("אימייל או סיסמה שגויים");
+
             return mapper.Map<UserDtoo>(currentUser);
         }
 
         // 2. רישום משתמש חדש
         public async Task<UserDtoo> Register(UserRegisterDto registerDto)
         {
+            // ✅ חדש
+            if (string.IsNullOrWhiteSpace(registerDto.UserEmail))
+                throw new DomainException("אימייל חובה");
+            if (!registerDto.UserEmail.Contains("@"))
+                throw new DomainException("אימייל לא תקין");
+            if (string.IsNullOrWhiteSpace(registerDto.UserPassword))
+                throw new DomainException("סיסמה חובה");
+            if (registerDto.UserPassword.Length < 6)
+                throw new DomainException("סיסמה חייבת להכיל לפחות 6 תווים");
+            if (string.IsNullOrWhiteSpace(registerDto.UserName))
+                throw new DomainException("שם משתמש חובה");
+
+            // ✅ חדש – בדיקת כפילות
+            var existing = await repository.GetByEmail(registerDto.UserEmail);
+            if (existing != null)
+                throw new DomainException("אימייל כבר קיים במערכת");
             // הופכים את ה-DTO שקיבלנו לישות User
             var userEntity = mapper.Map<User>(registerDto);
             userEntity.Role = User.EnumRole.Client;
@@ -62,9 +87,20 @@ namespace Service.Services
         // 3. עדכון פרטים (שם, טלפון וכו')
         public async Task<UserDtoo> Update(int id, UserUpdateDto updateDto)
         {
+            // ✅ חדש
+            if (string.IsNullOrWhiteSpace(updateDto.UserName))
+                throw new DomainException("שם משתמש חובה");
+            if (string.IsNullOrWhiteSpace(updateDto.UserEmail))
+                throw new DomainException("אימייל חובה");
+            if (!updateDto.UserEmail.Contains("@"))
+                throw new DomainException("אימייל לא תקין");
+
             // מוצאים את המשתמש הקיים לפי ה-ID
             var existingUser =await repository.GetById(updateDto.UserID);
             // מעדכנים את הפרטים מה-DTO לתוך הישות הקיימת
+            // ✅ חדש
+            if (existingUser == null)
+                throw new DomainException("משתמש לא נמצא");
             mapper.Map(updateDto, existingUser);
 
            // שומרים את השינויים במסד
@@ -88,10 +124,19 @@ namespace Service.Services
         {
            var user =await repository.GetById(passwordDto.UserID);
                 if (user == null) return false;
+            // ✅ חדש
+            if (string.IsNullOrWhiteSpace(passwordDto.UserPassword))
+                throw new DomainException("סיסמה נוכחית חובה");
+            if (string.IsNullOrWhiteSpace(passwordDto.UserPasswordNew))
+                throw new DomainException("סיסמה חדשה חובה");
+            if (passwordDto.UserPasswordNew.Length < 6)
+                throw new DomainException("סיסמה חדשה חייבת להכיל לפחות 6 תווים");
+            if (passwordDto.UserPassword == passwordDto.UserPasswordNew)
+                throw new DomainException("סיסמה חדשה חייבת להיות שונה מהנוכחית");
 
-                // כאן הקסם: במקום להשוות עם ==, משתמשים בפונקציה שבודקת את ההצפנה
-                // נניח שיש לך מחלקת עזר שנקראת PasswordHelper
-                bool isPasswordCorrect = VerifyPassword(passwordDto.UserPassword, user.UserPasswordHash);
+            // כאן הקסם: במקום להשוות עם ==, משתמשים בפונקציה שבודקת את ההצפנה
+            // נניח שיש לך מחלקת עזר שנקראת PasswordHelper
+            bool isPasswordCorrect = VerifyPassword(passwordDto.UserPassword, user.UserPasswordHash);
 
                 if (isPasswordCorrect)
                 {
