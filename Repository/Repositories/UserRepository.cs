@@ -99,5 +99,10 @@ namespace Repository.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.UserEmail == email);
         }
+        public async Task<User?> GetByEmailAndPhone(string email, string phone)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.UserEmail == email && u.UserPhone == phone);
+        }
     }
 }

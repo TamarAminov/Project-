@@ -86,26 +86,19 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpPut("change-password/{id}")]
-        public async Task<ActionResult<UserDtoo>> Put(int id, [FromBody] UserChangePasswordDto user)
+        [HttpPut("reset-password")]
+        public async Task<ActionResult> ResetPassword([FromBody] UserChangePasswordDto dto)
         {
             try
             {
-                        var newUser = new UserChangePasswordDto
-                        {
-                            UserID = id,
-                            UserPassword = user.UserPassword,
-                            UserPasswordNew = user.UserPasswordNew
-                        };
-                        var result = await service.ChangePassword(newUser);
-                        if (result == null) return NotFound();
-                        return Ok(result);// קוד 204 - הצלחתי לעדכן ואין לי מה להחזיר
+                var result = await service.ChangePassword(dto);
+                if (!result) return NotFound();
+                return Ok(new { message = "סיסמה עודכנה בהצלחה" });
             }
             catch (DomainException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
-
         }
         [HttpPost("login")]
         public async Task<ActionResult<UserDtoo>> Login([FromBody] UserLoginDto user)

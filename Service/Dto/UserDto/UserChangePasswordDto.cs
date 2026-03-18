@@ -8,8 +8,9 @@ namespace Service.Dto.UserDto
 {
     public class UserChangePasswordDto
     {
-        public int UserID { get; set; }
-        public string UserPassword { get; set; }
+        //public int UserID { get; set; }
+        public string UserPhone { get; set; }
+        public string UserEmail {  get; set; }
         public string UserPasswordNew { get; set; }
 
     }
