@@ -120,34 +120,56 @@ namespace Service.Services
             return BCrypt.Net.BCrypt.Verify(inputPassword, hashedPassword);
         }
         // 4. שינוי סיסמה
+        //public async Task<bool> ChangePassword(UserChangePasswordDto passwordDto)
+        //{
+        //   var user =await repository.GetById(passwordDto.UserID);
+        //        if (user == null) return false;
+        //    // ✅ חדש
+        //    if (string.IsNullOrWhiteSpace(passwordDto.UserPassword))
+        //        throw new DomainException("סיסמה נוכחית חובה");
+        //    if (string.IsNullOrWhiteSpace(passwordDto.UserPasswordNew))
+        //        throw new DomainException("סיסמה חדשה חובה");
+        //    if (passwordDto.UserPasswordNew.Length < 6)
+        //        throw new DomainException("סיסמה חדשה חייבת להכיל לפחות 6 תווים");
+        //    if (passwordDto.UserPassword == passwordDto.UserPasswordNew)
+        //        throw new DomainException("סיסמה חדשה חייבת להיות שונה מהנוכחית");
+
+        //    // כאן הקסם: במקום להשוות עם ==, משתמשים בפונקציה שבודקת את ההצפנה
+        //    // נניח שיש לך מחלקת עזר שנקראת PasswordHelper
+        //    bool isPasswordCorrect = VerifyPassword(passwordDto.UserPassword, user.UserPasswordHash);
+
+        //        if (isPasswordCorrect)
+        //        {
+        //            // לפני ששומרים את הסיסמה החדשה - חייבים להצפין גם אותה!
+        //            user.UserPasswordHash = HashPassword(passwordDto.UserPasswordNew);
+        //           await repository.UpdateItem(user.UserID, user);
+        //            return true;
+        //        }
+        //        return false;
+        //}
         public async Task<bool> ChangePassword(UserChangePasswordDto passwordDto)
         {
-           var user =await repository.GetById(passwordDto.UserID);
-                if (user == null) return false;
-            // ✅ חדש
-            if (string.IsNullOrWhiteSpace(passwordDto.UserPassword))
-                throw new DomainException("סיסמה נוכחית חובה");
+            if (string.IsNullOrWhiteSpace(passwordDto.UserEmail))
+                throw new DomainException("אימייל חובה");
+            if (string.IsNullOrWhiteSpace(passwordDto.UserPhone))
+                throw new DomainException("טלפון חובה");
             if (string.IsNullOrWhiteSpace(passwordDto.UserPasswordNew))
                 throw new DomainException("סיסמה חדשה חובה");
             if (passwordDto.UserPasswordNew.Length < 6)
                 throw new DomainException("סיסמה חדשה חייבת להכיל לפחות 6 תווים");
-            if (passwordDto.UserPassword == passwordDto.UserPasswordNew)
-                throw new DomainException("סיסמה חדשה חייבת להיות שונה מהנוכחית");
 
-            // כאן הקסם: במקום להשוות עם ==, משתמשים בפונקציה שבודקת את ההצפנה
-            // נניח שיש לך מחלקת עזר שנקראת PasswordHelper
-            bool isPasswordCorrect = VerifyPassword(passwordDto.UserPassword, user.UserPasswordHash);
+            // מצא משתמש לפי אימייל וטלפון
+            var user = await repository.GetByEmailAndPhone(
+                passwordDto.UserEmail,
+                passwordDto.UserPhone
+            );
+            if (user == null)
+                throw new DomainException("אימייל או טלפון שגויים");
 
-                if (isPasswordCorrect)
-                {
-                    // לפני ששומרים את הסיסמה החדשה - חייבים להצפין גם אותה!
-                    user.UserPasswordHash = HashPassword(passwordDto.UserPasswordNew);
-                   await repository.UpdateItem(user.UserID, user);
-                    return true;
-                }
-                return false;
+            user.UserPasswordHash = HashPassword(passwordDto.UserPasswordNew);
+            await repository.UpdateItem(user.UserID, user);
+            return true;
         }
-        
         public async Task<UserDtoo> GetById(int id)
         {
             // 1. מבקשים מה-Repository למצוא את המשתמש לפי ה-ID שלו במסד הנתונים
