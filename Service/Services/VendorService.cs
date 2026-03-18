@@ -112,21 +112,9 @@ namespace Service.Services
                 throw new DomainException("יש לבחור לפחות ספק אחד");
             await repository.AddVendorsToEvent(eventId, vendorIds);
         }
-        //public async Task<Dictionary<int, List<VendorAttributeDtoo>>> GetByVendorIdsAsync(List<int> vendorIds)
-        //{
-        //    var attrs = await repository.GetByVendorIdsAsync(vendorIds);
-        //    return attrs
-        //        .GroupBy(a => a.VendorID)
-        //        .ToDictionary(
-        //            g => g.Key,
-        //            g => g.Select(a => new VendorAttributeDtoo
-        //            {
-        //                VendorAttributeID = a.VendorAttributeID,
-        //                VendorAttributeName = a.VendorAttributeName,
-        //                Value = a.Value,
-        //                VendorId = a.VendorID
-        //            }).ToList()
-        //        );
-        //}
+        public async Task<List<int>> GetBusyVendorIds(int categoryId, DateTime eventDate, int currentEventId)
+        {
+            return await repository.GetBusyVendorIds(categoryId, eventDate, currentEventId);
+        }
     }
 }

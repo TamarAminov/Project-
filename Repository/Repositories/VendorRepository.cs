@@ -137,5 +137,15 @@ namespace Repository.Repositories
 
             await _context.save();
         }
+        public async Task<List<int>> GetBusyVendorIds(int categoryId, DateTime eventDate, int currentEventId)
+        {
+            return await _context.Events
+                .Where(e => e.EventDate.Date == eventDate.Date && e.EventID != currentEventId)
+                .SelectMany(e => e.Vendors)
+                .Where(v => v.CategoryID == categoryId)
+                .Select(v => v.VendorID)
+                .Distinct()
+                .ToListAsync();
+        }
     }
 }

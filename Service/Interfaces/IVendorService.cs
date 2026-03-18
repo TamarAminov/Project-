@@ -15,6 +15,6 @@ namespace Service.Interfaces
         public Task<int> GetMaxPriceOfVendorByCategory(int categoryId);
         public Task AddVendorsToEvent(int eventId, List<int> vendorIds);
         //public Task<Dictionary<int, List<VendorAttributeDtoo>>> GetByVendorIdsAsync(List<int> vendorIds);
-
+        public Task<List<int>> GetBusyVendorIds(int categoryId, DateTime eventDate, int currentEventId);
     }
 }
