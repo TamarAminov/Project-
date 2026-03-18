@@ -139,4 +139,13 @@ public class VendorController : ControllerBase
         var result = await _attributeService.GetByVendorIdsAsync(vendorIds);
         return Ok(result);
     }
+    [HttpGet("busy")]
+    public async Task<ActionResult<List<int>>> GetBusyVendors(
+    [FromQuery] int categoryId,
+    [FromQuery] DateTime eventDate,
+    [FromQuery] int currentEventId)
+    {
+        var busyIds = await _vendorService.GetBusyVendorIds(categoryId, eventDate, currentEventId);
+        return Ok(busyIds);
+    }
 }
